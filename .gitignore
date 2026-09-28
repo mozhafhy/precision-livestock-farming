@@ -1,0 +1,10 @@
+# Conda ENV
+env/
+
+.vscode/
+
+# Dataset
+dataset/original-dataset/
+
+# Jupyter checkpoint
+.ipynb_checkpoints/

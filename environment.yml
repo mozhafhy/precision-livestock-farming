@@ -1,0 +1,11 @@
+name: D:\projects\1-riset-fekal-ayam\env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - python
+  - opencv
+  - ipykernel
+  - matplotlib
+prefix: D:\projects\1-riset-fekal-ayam\env
