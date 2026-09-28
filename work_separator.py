@@ -1,20 +1,9 @@
-import re
 import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
 
-
-def get_file_number(file_path: Path) -> int:
-    match = re.search(r"\d+", file_path.name)
-    return int(match.group()) if match else 0
-
-
-def reset_author_dir(author_dir: Path) -> None:
-    """Hapus total isi lama sebelum copy — menjamin idempotensi run."""
-    if author_dir.exists():
-        shutil.rmtree(author_dir)
-    author_dir.mkdir(parents=True)
+from utils import get_file_number, reset_author_dir
 
 
 def main() -> None:

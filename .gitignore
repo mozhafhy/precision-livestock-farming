@@ -1,10 +1,20 @@
-# Conda ENV
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Conda/Environment targets
+.Conda/
 env/
+venv/
 
+# IDE files
 .vscode/
-
-# Dataset
-dataset/original-dataset/
+.idea/
 
 # Jupyter checkpoint
 .ipynb_checkpoints/
+
+# Dataset
+dataset/original-dataset/
