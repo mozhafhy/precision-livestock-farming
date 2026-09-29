@@ -235,3 +235,22 @@ def apply_gray_world(img: MatLike) -> MatLike:
     img_float = np.clip(img_float * scale_factors, 0, 255)
 
     return img_float.astype(img.dtype)
+
+
+def process_single_img(
+    inpath: Path,
+    outpath: Path,
+    return_result: bool = False
+) -> MatLike | None:
+    img = get_img(inpath)
+
+    cropped = auto_crop(img)
+    processed = apply_gray_world(cropped)
+
+    cv2.imwrite(outpath, processed)
+    print(f"Berhasil memproses: {inpath.name} -> {outpath}")
+    
+    if return_result:
+        return get_img(outpath)
+    
+    return None
