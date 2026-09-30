@@ -18,3 +18,6 @@ venv/
 
 # Dataset
 dataset/original-dataset/
+
+# Temp folder
+tmp/
