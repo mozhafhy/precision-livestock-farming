@@ -16,8 +16,8 @@ class HistCfg(TypedDict, total=False):
     log: bool
 
 
-def get_img(img_path: Path | str) -> MatLike:
-    img = cv2.imread(img_path)
+def get_img(img_path: Path | str, flags: int = cv2.IMREAD_COLOR_BGR) -> MatLike:
+    img = cv2.imread(img_path, flags=flags)
     if img is None:
         raise FileNotFoundError(f"Gambar tidak bisa dibaca: {img_path}")
 
@@ -90,6 +90,7 @@ def show_images(
     ncols: int = 3,
     hist_cfg: HistCfg | None = None,
     cmap: str | None = "gray",
+    suptitle: str | None = None,
 ) -> None:
 
     hist_cfg = _DEFAULT_HIST_CONFIG if hist_cfg is None else hist_cfg
@@ -111,6 +112,9 @@ def show_images(
         figsize=(fig_width, fig_height),
         squeeze=False,
     )
+    
+    if suptitle:
+        plt.suptitle(suptitle)
 
     for i, (title, img) in enumerate(img_dict.items()):
         if show_hist:
