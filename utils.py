@@ -112,7 +112,7 @@ def show_images(
         figsize=(fig_width, fig_height),
         squeeze=False,
     )
-    
+
     if suptitle:
         plt.suptitle(suptitle)
 
@@ -181,29 +181,66 @@ def auto_crop(
     img: MatLike,
     padding: int = 15,
     min_area_ratio: float = 0.005,
+    verbose: bool = False,
+    show_hist_in_verbose: bool = False,
 ) -> MatLike:
     img_h, img_w = img.shape[:2]
     total_area = img_h * img_w
+    hist_cfg: HistCfg = {"show_hist": show_hist_in_verbose}
 
     # 1. Konversi ke HSV dan ambil kanal Saturation (S)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     saturation = hsv[:, :, 1]
+    if verbose:
+        show_img(
+            saturation,
+            "1. Saturation Channel (HSV)",
+            cmap="gray",
+            hist_cfg=hist_cfg,
+        )
 
     # 2. Gaussian Blur pada kanal Saturation
     k_size = get_optimal_kernel_size(img)
     blurred = cv2.GaussianBlur(saturation, k_size, 0)
+    if verbose:
+        show_img(
+            blurred,
+            f"2. Gaussian Blur (Kernel: {k_size})",
+            cmap="gray",
+            hist_cfg=hist_cfg,
+        )
 
     # 3. Otsu Thresholding pada kanal Saturation
     _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    if verbose:
+        show_img(
+            thresh,
+            "3. Otsu Thresholding Result",
+            cmap="gray",
+            hist_cfg=hist_cfg,
+        )
 
     # 4. Morphological Closing untuk menyatukan area kotoran yang terpisah
     morph_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, morph_kernel)
+    thresh_closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, morph_kernel)
+    if verbose:
+        show_img(
+            thresh_closed,
+            "4. Morphological Closing Result",
+            cmap="gray",
+            hist_cfg=hist_cfg,
+        )
 
     # 5. Cari kontur
-    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(
+        thresh_closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
 
     if not contours:
+        if verbose:
+            print(
+                "Warning: Tidak ada kontur yang ditemukan. Mengembalikan gambar asli."
+            )
         return img
 
     # 6. FILTERING: HANYA ambil kontur yang luasnya > min_area_ratio dari total gambar
@@ -226,7 +263,33 @@ def auto_crop(
     x2 = min(img_w, x + w + padding)
     y2 = min(img_h, y + h + padding)
 
-    return img[y1:y2, x1:x2]
+    cropped = img[y1:y2, x1:x2]
+
+    # Visualisasi tambahan jika verbose=True
+    if verbose:
+        # Gambar kontur valid (Hijau) dan Bounding Box (Merah) pada salinan gambar
+        img_box = img.copy()
+        cv2.drawContours(img_box, valid_contours, -1, (0, 255, 0), 2)
+        cv2.rectangle(img_box, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+        # Matplotlib membutuhkan format RGB untuk gambar 3-channel
+        img_box_rgb = cv2.cvtColor(img_box, cv2.COLOR_BGR2RGB)
+        cropped_rgb = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
+
+        show_img(
+            img_box_rgb,
+            "5. Detected Contours & Bounding Box",
+            cmap=None,
+            hist_cfg=hist_cfg,
+        )
+        show_img(
+            cropped_rgb,
+            "6. Final Auto-Cropped Result",
+            cmap=None,
+            hist_cfg=hist_cfg,
+        )
+
+    return cropped
 
 
 def apply_gray_world(img: MatLike) -> MatLike:
@@ -242,9 +305,7 @@ def apply_gray_world(img: MatLike) -> MatLike:
 
 
 def process_single_img(
-    inpath: Path,
-    outpath: Path,
-    return_result: bool = False
+    inpath: Path, outpath: Path, return_result: bool = False
 ) -> MatLike | None:
     img = get_img(inpath)
 
@@ -253,8 +314,8 @@ def process_single_img(
 
     cv2.imwrite(outpath, processed)
     print(f"Berhasil memproses: {inpath.name} -> {outpath}")
-    
+
     if return_result:
         return get_img(outpath)
-    
+
     return None
