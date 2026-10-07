@@ -8,4 +8,6 @@ dependencies:
   - opencv
   - ipykernel
   - matplotlib
+  - scikit-learn
+  - pandas
 prefix: D:\projects\1-riset-fekal-ayam\env
