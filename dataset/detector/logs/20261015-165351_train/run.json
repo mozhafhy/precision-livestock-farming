@@ -1,0 +1,11 @@
+{
+  "status": "interrupted",
+  "started": "2026-10-15T16:53:51",
+  "argv": [
+    "D:\\projects\\1-riset-fekal-ayam\\scripts\\train.py"
+  ],
+  "ended": "2026-10-15T16:58:46",
+  "duration_min": 4.87,
+  "exit_code": 3221225786,
+  "exit_meaning": "0xC000013A CTRL_C_EXIT (diinterupsi dengan Ctrl+C)"
+}

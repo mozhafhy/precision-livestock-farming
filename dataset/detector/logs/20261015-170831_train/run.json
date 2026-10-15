@@ -1,0 +1,15 @@
+{
+  "status": "ok",
+  "started": "2026-10-15T17:08:31",
+  "argv": [
+    "D:\\projects\\1-riset-fekal-ayam\\scripts\\train.py",
+    "--resume",
+    "dataset/detector/runs/train-2/weights/last.pt",
+    "--workers",
+    "0"
+  ],
+  "ended": "2026-10-15T17:17:34",
+  "duration_min": 9.01,
+  "exit_code": 0,
+  "exit_meaning": "0 (normal)"
+}

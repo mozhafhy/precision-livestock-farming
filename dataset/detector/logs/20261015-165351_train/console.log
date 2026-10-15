@@ -1,0 +1,137 @@
+2026-10-15 16:53:54 | [cmd] D:\projects\1-riset-fekal-ayam\env\python.exe -u -m scripts.train_worker --log-dir D:\projects\1-riset-fekal-ayam\dataset\detector\logs\20261015-165351_train
+2026-10-15 16:54:17 | [progress] Downloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolov8n.pt to 'yolov8n.pt': 0% ──────────── 48.0KB/6.2MB 111.0KB/s 0.1s<57.2s
+2026-10-15 16:54:22 | Downloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolov8n.pt to 'yolov8n.pt': 100% ━━━━━━━━━━━━ 6.2MB 1.4MB/s 4.6s
+2026-10-15 16:54:22 | Ultralytics 8.4.177  Python-3.14.7 torch-2.13.0 CUDA:0 (NVIDIA GeForce RTX 3050 Laptop GPU, 4096MiB)
+2026-10-15 16:54:23 | engine\trainer: agnostic_nms=False, amp=True, angle=1.0, augment=False, auto_augment=randaugment, batch=16, bgr=0.0, box=7.5, cache=False, cfg=None, channels_last=None, classes=None, close_mosaic=10, cls=0.5, cls_pw=0.0, cls_remap=True, compile=False, conf=None, copy_paste=0.0, copy_paste_mode=flip, cos_lr=False, cutmix=0.0, data=D:\projects\1-riset-fekal-ayam\dataset\detector\data.yaml, degrees=0.0, deterministic=True, device=, dfl=1.5, dgrad=0.5, dis=6.0, distill_model=None, dlam=1.0, dlog=1.0, dnn=False, dropout=0.0, dynamic=False, embed=None, epochs=100, erasing=0.4, exist_ok=False, fliplr=0.5, flipud=0.0, format=torchscript, fraction=1.0, freeze=None, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, imgsz=640, iou=0.7, kobj=1.0, line_width=None, lr0=0.01, lrf=0.01, mask_ratio=4, max_det=300, mixup=0.0, mode=train, model=yolov8n.pt, momentum=0.937, mosaic=1.0, multi_scale=0.0, name=train-2, nbs=64, nms=None, opset=None, optimize=False, optimizer=auto, overlap_mask=True, patience=20, perspective=0.0, plots=True, pose=12.0, pretrained=True, profile=False, project=D:\projects\1-riset-fekal-ayam\dataset\detector\runs, quantize=None, rect=False, resume=False, retina_masks=False, rle=1.0, save=True, save_conf=False, save_crop=False, save_dir=D:\projects\1-riset-fekal-ayam\dataset\detector\runs\train-2, save_frames=False, save_json=False, save_period=-1, save_txt=False, scale=0.5, seed=42, shear=0.0, show=False, show_boxes=True, show_conf=True, show_labels=True, simplify=True, single_cls=False, source=None, split=val, stream_buffer=False, task=detect, time=None, tracker=tracktrack.yaml, translate=0.1, val=True, verbose=True, vid_stride=1, visualize=False, warmup_bias_lr=0.1, warmup_epochs=3.0, warmup_momentum=0.8, weight_decay=0.0005, workers=8, workspace=None
+2026-10-15 16:54:23 | Overriding model.yaml nc=80 with nc=1
+2026-10-15 16:54:23 |                    from  n    params  module                                       arguments
+2026-10-15 16:54:23 |   0                  -1  1       464  ultralytics.nn.modules.conv.Conv             [3, 16, 3, 2]
+2026-10-15 16:54:23 |   1                  -1  1      4672  ultralytics.nn.modules.conv.Conv             [16, 32, 3, 2]
+2026-10-15 16:54:23 |   2                  -1  1      7360  ultralytics.nn.modules.block.C2f             [32, 32, 1, True]
+2026-10-15 16:54:23 |   3                  -1  1     18560  ultralytics.nn.modules.conv.Conv             [32, 64, 3, 2]
+2026-10-15 16:54:23 |   4                  -1  2     49664  ultralytics.nn.modules.block.C2f             [64, 64, 2, True]
+2026-10-15 16:54:23 |   5                  -1  1     73984  ultralytics.nn.modules.conv.Conv             [64, 128, 3, 2]
+2026-10-15 16:54:23 |   6                  -1  2    197632  ultralytics.nn.modules.block.C2f             [128, 128, 2, True]
+2026-10-15 16:54:23 |   7                  -1  1    295424  ultralytics.nn.modules.conv.Conv             [128, 256, 3, 2]
+2026-10-15 16:54:23 |   8                  -1  1    460288  ultralytics.nn.modules.block.C2f             [256, 256, 1, True]
+2026-10-15 16:54:23 |   9                  -1  1    164608  ultralytics.nn.modules.block.SPPF            [256, 256, 5]
+2026-10-15 16:54:23 |  10                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']
+2026-10-15 16:54:23 |  11             [-1, 6]  1         0  ultralytics.nn.modules.conv.Concat           [1]
+2026-10-15 16:54:23 |  12                  -1  1    148224  ultralytics.nn.modules.block.C2f             [384, 128, 1]
+2026-10-15 16:54:23 |  13                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']
+2026-10-15 16:54:23 |  14             [-1, 4]  1         0  ultralytics.nn.modules.conv.Concat           [1]
+2026-10-15 16:54:23 |  15                  -1  1     37248  ultralytics.nn.modules.block.C2f             [192, 64, 1]
+2026-10-15 16:54:23 |  16                  -1  1     36992  ultralytics.nn.modules.conv.Conv             [64, 64, 3, 2]
+2026-10-15 16:54:23 |  17            [-1, 12]  1         0  ultralytics.nn.modules.conv.Concat           [1]
+2026-10-15 16:54:23 |  18                  -1  1    123648  ultralytics.nn.modules.block.C2f             [192, 128, 1]
+2026-10-15 16:54:23 |  19                  -1  1    147712  ultralytics.nn.modules.conv.Conv             [128, 128, 3, 2]
+2026-10-15 16:54:23 |  20             [-1, 9]  1         0  ultralytics.nn.modules.conv.Concat           [1]
+2026-10-15 16:54:23 |  21                  -1  1    493056  ultralytics.nn.modules.block.C2f             [384, 256, 1]
+2026-10-15 16:54:23 |  22        [15, 18, 21]  1    751507  ultralytics.nn.modules.head.Detect           [1, 16, None, [64, 128, 256]]
+2026-10-15 16:54:23 | Model summary: 129 layers, 3,011,043 parameters, 3,011,027 gradients, 8.2 GFLOPs
+2026-10-15 16:54:23 | Transferred 349/355 items from pretrained weights
+2026-10-15 16:54:25 | Freezing layer 'model.22.dfl.conv.weight'
+2026-10-15 16:54:25 | AMP: running Automatic Mixed Precision (AMP) checks...
+2026-10-15 16:54:25 | AMP: downloading yolo26n.pt for AMP checks (one-time, not used for training)...
+2026-10-15 16:54:29 | Downloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.pt to 'weights\yolo26n.pt': 100% ━━━━━━━━━━━━ 5.3MB 1.4MB/s 3.8s
+2026-10-15 16:54:34 | AMP: checks passed
+2026-10-15 16:54:34 | train: Fast image access  (ping: 0.0±0.0 ms, read: 151.6±25.6 MB/s, size: 32.7 KB)
+2026-10-15 16:54:34 | [progress] train: Scanning D:\projects\1-riset-fekal-ayam\dataset\detector\labels\train.cache... 213 images, 1 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 213/213 68.7Mit/s 0.0s
+2026-10-15 16:54:34 | train: Scanning D:\projects\1-riset-fekal-ayam\dataset\detector\labels\train.cache... 213 images, 1 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 213/213 68.7Mit/s 0.0s
+2026-10-15 16:54:34 | val: Fast image access  (ping: 0.0±0.0 ms, read: 227.7±115.4 MB/s, size: 37.4 KB)
+2026-10-15 16:54:34 | val: Scanning D:\projects\1-riset-fekal-ayam\dataset\detector\labels\val.cache... 46 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 46/46 13.8Mit/s 0.0s
+2026-10-15 16:54:34 | optimizer: 'optimizer=auto' found, ignoring 'lr0=0.01' and determining best 'optimizer' and 'lr0' automatically...
+2026-10-15 16:54:34 | optimizer: AdamW(lr=0.002, momentum=0.9) with parameter groups 57 weight(decay=0.0), 64 weight(decay=0.0005), 63 bias(decay=0.0)
+2026-10-15 16:54:39 | Plotting labels to D:\projects\1-riset-fekal-ayam\dataset\detector\runs\train-2\labels.jpg...
+2026-10-15 16:54:40 | Using 213 train, 46 val images for fraction=1.0 at imgsz=640
+2026-10-15 16:54:40 | Using 8 dataloader workers
+2026-10-15 16:54:40 | Logging results to D:\projects\1-riset-fekal-ayam\dataset\detector\runs\train-2
+2026-10-15 16:54:40 | Starting training for 100 epochs...
+2026-10-15 16:55:25 |       Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+2026-10-15 16:55:27 | [progress]       1/100      1.92G      1.594       3.77      1.677         32        640: 0% ──────────── 0/14  46.7s
+2026-10-15 16:55:31 |       1/100      1.97G      1.535      4.971      1.649         10        640: 100% ━━━━━━━━━━━━ 14/14 3.6s/it 50.6s
+2026-10-15 16:55:37 |                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2/2 2.9s/it 5.7s
+2026-10-15 16:55:37 |                    all         46         48      0.751      0.146      0.141      0.103
+2026-10-15 16:55:39 |       Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+2026-10-15 16:55:42 | [progress]       2/100      1.98G      1.586       3.28      1.719          7        640: 92% ━━━━━━━━━━━─ 13/14 6.2it/s 2.8s<0.2s
+2026-10-15 16:55:42 |       2/100      1.98G      1.586       3.28      1.719          7        640: 100% ━━━━━━━━━━━━ 14/14 5.0it/s 2.8s
+2026-10-15 16:55:42 |                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2/2 5.0it/s 0.4s
+2026-10-15 16:55:43 |                    all         46         48      0.109      0.146       0.05     0.0207
+2026-10-15 16:55:43 |       Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+2026-10-15 16:55:46 |       3/100      1.98G      1.766      2.369      1.738         12        640: 100% ━━━━━━━━━━━━ 14/14 5.3it/s 2.6s
+2026-10-15 16:55:46 |                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2/2 5.9it/s 0.3s
+2026-10-15 16:55:46 |                    all         46         48     0.0703      0.312     0.0404     0.0128
+2026-10-15 16:55:52 |       Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+2026-10-15 16:55:55 |       4/100      1.99G      1.731      2.219      1.785          9        640: 100% ━━━━━━━━━━━━ 14/14 4.3it/s 3.3s
+2026-10-15 16:56:02 | [progress]                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 50% ━━━━━━────── 1/2 23.8s/it 7.1s<23.8s
+2026-10-15 16:56:03 |                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2/2 3.6s/it 7.2s
+2026-10-15 16:56:03 |                    all         46         48     0.0271      0.188     0.0106     0.0025
+2026-10-15 16:56:08 | Traceback (most recent call last):
+2026-10-15 16:56:08 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\multiprocessing\queues.py", line 262, in _feed
+2026-10-15 16:56:08 |     obj = _ForkingPickler.dumps(obj)
+2026-10-15 16:56:08 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\multiprocessing\reduction.py", line 51, in dumps
+2026-10-15 16:56:08 |     cls(buf, protocol).dump(obj)
+2026-10-15 16:56:08 |     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+2026-10-15 16:56:08 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\multiprocessing\reductions.py", line 602, in reduce_storage
+2026-10-15 16:56:08 |     metadata = storage._share_filename_cpu_()
+2026-10-15 16:56:08 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\storage.py", line 449, in wrapper
+2026-10-15 16:56:08 |     return fn(self, *args, **kwargs)
+2026-10-15 16:56:08 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\storage.py", line 531, in _share_filename_cpu_
+2026-10-15 16:56:08 |     return super()._share_filename_cpu_(*args, **kwargs)
+2026-10-15 16:56:08 |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+2026-10-15 16:56:08 | RuntimeError: Couldn't open shared file mapping: <torch_31172_3507745495_39>, error code: <1455>
+2026-10-15 16:56:08 | when serializing tuple item 0
+2026-10-15 16:56:08 | when serializing torch.storage.TypedStorage reconstructor arguments
+2026-10-15 16:56:08 | when serializing torch.storage.TypedStorage object
+2026-10-15 16:56:08 | when serializing tuple item 1
+2026-10-15 16:56:08 | when serializing torch.Tensor reconstructor arguments
+2026-10-15 16:56:08 | when serializing torch.Tensor object
+2026-10-15 16:56:08 | when serializing dict item 'img'
+2026-10-15 16:56:08 | when serializing tuple item 1
+2026-10-15 16:56:09 |       Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+2026-10-15 16:56:12 |       5/100      1.98G      1.721      2.178      1.746          8        640: 100% ━━━━━━━━━━━━ 14/14 4.8it/s 2.9s
+2026-10-15 16:56:13 |                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2/2 4.6it/s 0.4s
+2026-10-15 16:56:13 |                    all         46         48     0.0211      0.125    0.00683    0.00145
+2026-10-15 16:56:15 |       Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+2026-10-15 16:58:41 | [progress]       6/100      1.95G      1.679      1.994      1.774         33        640: 57% ━━━━━━╸───── 8/14 2.5it/s 2:26<2.4s
+2026-10-15 16:58:41 |       6/100      1.95G      1.679      1.994      1.774         33        640: 57% ━━━━━━╸───── 8/14 2.5it/s 2:26<2.4s
+2026-10-15 16:58:41 | Traceback (most recent call last):
+2026-10-15 16:58:41 |   File "<frozen runpy>", line 203, in _run_module_as_main
+2026-10-15 16:58:41 |   File "<frozen runpy>", line 88, in _run_code
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\scripts\train_worker.py", line 335, in <module>
+2026-10-15 16:58:41 |     main()
+2026-10-15 16:58:41 |     ~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\scripts\train_worker.py", line 316, in main
+2026-10-15 16:58:41 |     model.train(**kwargs)
+2026-10-15 16:58:41 |     ~~~~~~~~~~~^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\model.py", line 898, in train
+2026-10-15 16:58:41 |     self.trainer.train()
+2026-10-15 16:58:41 |     ~~~~~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\trainer.py", line 262, in train
+2026-10-15 16:58:41 |     self._do_train()
+2026-10-15 16:58:41 |     ~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\trainer.py", line 517, in _do_train
+2026-10-15 16:58:41 |     for i, batch in pbar:
+2026-10-15 16:58:41 |                     ^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\utils\tqdm.py", line 379, in __iter__
+2026-10-15 16:58:41 |     for item in self.iterable:
+2026-10-15 16:58:41 |                 ^^^^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\data\build.py", line 87, in __iter__
+2026-10-15 16:58:41 |     yield next(self.iterator)
+2026-10-15 16:58:41 |           ~~~~^^^^^^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 725, in __next__
+2026-10-15 16:58:41 |     data = self._next_data()
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1505, in _next_data
+2026-10-15 16:58:41 |     idx, data = self._get_data()
+2026-10-15 16:58:41 |                 ~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1454, in _get_data
+2026-10-15 16:58:41 |     success, data = self._try_get_data()
+2026-10-15 16:58:41 |                     ~~~~~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1291, in _try_get_data
+2026-10-15 16:58:41 |     data = self._data_queue.get(timeout=timeout)
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\queue.py", line 210, in get
+2026-10-15 16:58:41 |     self.not_empty.wait(remaining)
+2026-10-15 16:58:41 |     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\threading.py", line 373, in wait
+2026-10-15 16:58:41 |     gotit = waiter.acquire(True, timeout)
+2026-10-15 16:58:41 | KeyboardInterrupt
