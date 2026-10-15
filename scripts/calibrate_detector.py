@@ -10,36 +10,72 @@ Metrik (sebagian dari Tabel 4 panduan): precision, recall, F1, rata-rata IoU kot
 count accuracy, tingkat no_detection, mAP@0.5 (hanya uji). Crop success rate butuh Tahap 4 dan belum ada di sini.
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, TypedDict, cast
 
 import numpy as np
+import torch
 import yaml
+from numpy.typing import NDArray
+from ultralytics.engine.results import Results
 
-IMG_EXT = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-DEFAULT_NMS_IOU = 0.7
+if TYPE_CHECKING:
+    from ultralytics import YOLO
+
+IMG_EXT: frozenset[str] = frozenset({".jpg", ".jpeg", ".png", ".bmp", ".webp"})
+DEFAULT_NMS_IOU: float = 0.7
+
+Box = tuple[float, float, float, float]  # xyxy, piksel
 
 
-def iou_xyxy(a, b):
+class Item(TypedDict):
+    """Prediksi dan ground truth satu citra; pred/conf sudah urut menurun menurut confidence."""
+
+    name: str
+    pred: NDArray[np.float64]  # (N, 4) xyxy
+    conf: NDArray[np.float64]  # (N,)
+    gt: list[Box]
+
+
+class Metrics(TypedDict):
+    precision: float
+    recall: float
+    f1: float
+    mean_iou: float
+    count_acc: float
+    crowded_n: int
+    crowded_count_acc: float | None
+    no_detection_all: float
+    no_detection_on_positives: float | None  # citra BER-ekskreta yang tak terdeteksi
+    fp_on_negatives: float | None  # citra tanpa ekskreta yang punya deteksi
+    n_images: int
+    n_positive: int
+    n_negative: int
+
+
+def iou_xyxy(a: Box | NDArray[np.float64], b: Box | NDArray[np.float64]) -> float:
     ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
     iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
     inter = ix * iy
     union = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - inter
-    return inter / union if union > 0 else 0.0
+    return float(inter / union) if union > 0 else 0.0
 
 
-def split_dirs(data_yaml, split):
-    cfg = yaml.safe_load(Path(data_yaml).read_text())
-    rel = cfg[split]  # mis. images/val
+def split_dirs(data_yaml: str | Path, split: str) -> tuple[Path, Path]:
+    cfg: dict[str, Any] = yaml.safe_load(Path(data_yaml).read_text())
+    rel: str = cfg[split]  # mis. images/val
     root = Path(cfg["path"])
     return root / rel, root / rel.replace("images", "labels", 1)
 
 
-def load_gt(path, w, h):
+def load_gt(path: Path, w: int, h: int) -> list[Box]:
     """Label YOLO detect (5 kolom, ternormalisasi) -> daftar kotak xyxy piksel."""
-    boxes = []
+    boxes: list[Box] = []
     if path.exists():
         for line in path.read_text().splitlines():
             p = line.split()
@@ -57,10 +93,12 @@ def load_gt(path, w, h):
     return boxes
 
 
-def collect(model, img_dir, lbl_dir, conf, iou, imgsz):
+def collect(
+    model: YOLO, img_dir: Path, lbl_dir: Path, conf: float, iou: float, imgsz: int
+) -> list[Item]:
     """Prediksi seluruh citra pada conf rendah; ambang τconf diterapkan kemudian di score()."""
     paths = sorted(p for p in img_dir.iterdir() if p.suffix.lower() in IMG_EXT)
-    items = []
+    items: list[Item] = []
     gen = model.predict(
         source=[str(p) for p in paths],
         conf=conf,
@@ -69,32 +107,36 @@ def collect(model, img_dir, lbl_dir, conf, iou, imgsz):
         stream=True,
         verbose=False,
     )
+    
+    gen = cast(list[Results], gen)
     for p, r in zip(paths, gen):
         h, w = r.orig_shape
-        boxes = r.boxes.xyxy.cpu().numpy()
-        confs = r.boxes.conf.cpu().numpy()
-        o = np.argsort(-confs)
-        items.append(
-            {
-                "name": p.name,
-                "pred": boxes[o],
-                "conf": confs[o],
-                "gt": load_gt(lbl_dir / f"{p.stem}.txt", w, h),
-            }
-        )
+        
+        if r.boxes is not None:
+            boxes = cast(torch.Tensor, r.boxes.xyxy).cpu().numpy()
+            confs = cast(torch.Tensor, r.boxes.conf).cpu().numpy()
+            o = np.argsort(-confs)
+            items.append(
+                {
+                    "name": p.name,
+                    "pred": boxes[o],
+                    "conf": confs[o],
+                    "gt": load_gt(lbl_dir / f"{p.stem}.txt", w, h),
+                }
+            )
     return items
 
 
-def score(items, tau):
+def score(items: list[Item], tau: float) -> Metrics:
     tp = fp = fn = 0
-    ious = []
+    ious: list[float] = []
     n_img = n_pos = n_neg = 0
     count_ok = crowded = crowded_ok = 0
     nodet_all = miss_pos = fp_neg = 0
     for it in items:
         pb = it["pred"][it["conf"] >= tau]  # urut menurun berdasarkan confidence
         gt = it["gt"]
-        matched = set()
+        matched: set[int] = set()
         for b in pb:
             best, bi = 0.0, -1
             for gi, g in enumerate(gt):
@@ -110,19 +152,19 @@ def score(items, tau):
             else:
                 fp += 1
         fn += len(gt) - len(matched)
-        n, g = len(pb), len(gt)
+        n, g_n = len(pb), len(gt)
         n_img += 1
-        count_ok += int(n == g)
+        count_ok += int(n == g_n)
         nodet_all += int(n == 0)
-        if g >= 1:
+        if g_n >= 1:
             n_pos += 1
             miss_pos += int(n == 0)
         else:
             n_neg += 1
             fp_neg += int(n > 0)
-        if g >= 2:
+        if g_n >= 2:
             crowded += 1
-            crowded_ok += int(n == g)
+            crowded_ok += int(n == g_n)
     prec = tp / (tp + fp) if tp + fp else 0.0
     rec = tp / (tp + fn) if tp + fn else 0.0
     return {
@@ -134,32 +176,28 @@ def score(items, tau):
         "crowded_n": crowded,
         "crowded_count_acc": crowded_ok / crowded if crowded else None,
         "no_detection_all": nodet_all / n_img if n_img else 0.0,
-        "no_detection_on_positives": miss_pos / n_pos
-        if n_pos
-        else None,  # citra BER-ekskreta yang tak terdeteksi
-        "fp_on_negatives": fp_neg / n_neg
-        if n_neg
-        else None,  # citra tanpa ekskreta yang punya deteksi
+        "no_detection_on_positives": miss_pos / n_pos if n_pos else None,
+        "fp_on_negatives": fp_neg / n_neg if n_neg else None,
         "n_images": n_img,
         "n_positive": n_pos,
         "n_negative": n_neg,
     }
 
 
-def pick_conf(items):
+def pick_conf(items: list[Item]) -> tuple[float, float]:
     """τconf = titik F1 maksimum (kurva dihaluskan jendela 5 agar tidak memilih puncak tunggal)."""
     taus = np.round(np.arange(0.01, 1.0, 0.01), 2)
-    f1 = np.array([score(items, t)["f1"] for t in taus])
+    f1 = np.array([score(items, float(t))["f1"] for t in taus])
     sm = np.convolve(f1, np.ones(5) / 5, mode="same")
     i = int(sm.argmax())
     return float(taus[i]), float(f1[i])
 
 
-def pct(v):
+def pct(v: float | None) -> str:
     return "  n/a " if v is None else f"{100 * v:5.1f}%"
 
 
-def main():
+def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--weights", required=True)
     ap.add_argument("--data", default="dataset/detector/data.yaml")
@@ -185,10 +223,10 @@ def main():
             sys.exit(
                 f"{out} belum ada. Jalankan kalibrasi pada subset validasi terlebih dahulu."
             )
-        th = json.loads(out.read_text())
+        th: dict[str, Any] = json.loads(out.read_text())
         img_dir, lbl_dir = split_dirs(args.data, "test")
         items = collect(model, img_dir, lbl_dir, 0.001, th["iou"], th["imgsz"])
-        res = score(items, th["conf"])
+        res: dict[str, Any] = dict(score(items, th["conf"]))
         res["mAP50"] = float(
             model.val(
                 data=args.data,
@@ -212,7 +250,7 @@ def main():
         f"τconf = {tau:.2f} (F1 = {f1:.3f}, NMS IoU = {DEFAULT_NMS_IOU}, {len(base)} citra val)\n"
     )
 
-    rows = []
+    rows: list[tuple[float, Metrics]] = []
     for iou in args.iou_sweep:
         items = (
             base
@@ -231,7 +269,7 @@ def main():
             f"  {pct(s['fp_on_negatives'])}"
         )
 
-    def key(r):
+    def key(r: tuple[float, Metrics]) -> tuple[float, float, float]:
         s = r[1]
         primary = (
             s["crowded_count_acc"]
