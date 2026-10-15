@@ -107,23 +107,29 @@ def collect(
         stream=True,
         verbose=False,
     )
-    
+
     gen = cast(list[Results], gen)
     for p, r in zip(paths, gen):
         h, w = r.orig_shape
-        
-        if r.boxes is not None:
+
+        if r.boxes is not None and len(r.boxes) > 0:
             boxes = cast(torch.Tensor, r.boxes.xyxy).cpu().numpy()
             confs = cast(torch.Tensor, r.boxes.conf).cpu().numpy()
             o = np.argsort(-confs)
-            items.append(
-                {
-                    "name": p.name,
-                    "pred": boxes[o],
-                    "conf": confs[o],
-                    "gt": load_gt(lbl_dir / f"{p.stem}.txt", w, h),
-                }
-            )
+            boxes = boxes[o]
+            confs = confs[o]
+        else:
+            boxes = np.empty((0, 4), dtype=np.float64)
+            confs = np.empty((0,), dtype=np.float64)
+
+        items.append(
+            {
+                "name": p.name,
+                "pred": boxes,
+                "conf": confs,
+                "gt": load_gt(lbl_dir / f"{p.stem}.txt", w, h),
+            }
+        )
     return items
 
 
