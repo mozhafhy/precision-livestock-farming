@@ -12,6 +12,8 @@ Hasil training di <out>/runs/ TIDAK ikut terhapus saat konversi diulang.
 Dependensi: pip install ultralytics pycocotools opencv-python pyyaml numpy
 """
 
+from __future__ import annotations
+
 import argparse
 import csv
 import json
@@ -19,14 +21,57 @@ import shutil
 import sys
 from collections import Counter
 from pathlib import Path
+from typing import Any, Literal, NotRequired, TypedDict
 
 import cv2
 import numpy as np
 import yaml
+from numpy.typing import NDArray
 from pycocotools import mask as mask_utils
 
-SPLITS = ["train", "val", "test"]
-SPLIT_ALIASES = {
+# ---------------------------------------------------------------- tipe
+Task = Literal["detect", "seg"]
+Box = tuple[float, float, float, float]  # xyxy, piksel
+Mask = NDArray[np.uint8]
+
+
+class Rle(TypedDict):
+    counts: str | bytes | list[int]
+    size: list[int]
+
+
+Segmentation = Rle | list[list[int]]
+
+
+class CocoCategory(TypedDict):
+    id: int
+    name: str
+    supercategory: NotRequired[str]
+
+
+class CocoImage(TypedDict):
+    id: int
+    file_name: str
+    width: int
+    height: int
+
+
+class CocoAnnotation(TypedDict):
+    id: int
+    image_id: int
+    category_id: int
+    bbox: list[float]  # xywh, piksel
+    segmentation: NotRequired[Segmentation | None]
+
+
+class CocoDataset(TypedDict):
+    categories: list[CocoCategory]
+    images: list[CocoImage]
+    annotations: list[CocoAnnotation]
+
+
+SPLITS: list[str] = ["train", "val", "test"]
+SPLIT_ALIASES: dict[str, str] = {
     "train": "train",
     "latih": "train",
     "val": "val",
@@ -39,20 +84,20 @@ SPLIT_ALIASES = {
 
 
 # ---------------------------------------------------------------- geometri
-def to_binary_mask(seg, h, w):
+def to_binary_mask(seg: Segmentation, h: int, w: int) -> Mask:
     """Segmentasi COCO (RLE terkompresi/tak terkompresi atau list polygon) -> mask biner."""
     if isinstance(seg, dict):  # RLE
-        rle = seg
+        rle: Any = seg
         if isinstance(rle["counts"], list):  # uncompressed RLE
             rle = mask_utils.frPyObjects(rle, *rle["size"])
         if list(rle["size"]) != [h, w]:
             raise ValueError(f"ukuran RLE {rle['size']} != ukuran gambar {[h, w]}")
-        return mask_utils.decode(rle)
-    rles = mask_utils.frPyObjects(seg, h, w)  # list polygon
-    return mask_utils.decode(mask_utils.merge(rles))
+        return np.asarray(mask_utils.decode(rle), dtype=np.uint8)
+    rles: Any = mask_utils.frPyObjects(seg, h, w)  # list polygon
+    return np.asarray(mask_utils.decode(mask_utils.merge(rles)), dtype=np.uint8)
 
 
-def mask_bbox(mask):
+def mask_bbox(mask: Mask) -> Box | None:
     """Batas terluar mask -> (xmin, ymin, xmax, ymax) piksel, atau None bila mask kosong."""
     ys, xs = np.nonzero(mask)
     if xs.size == 0:
@@ -60,7 +105,7 @@ def mask_bbox(mask):
     return float(xs.min()), float(ys.min()), float(xs.max() + 1), float(ys.max() + 1)
 
 
-def iou_xyxy(a, b):
+def iou_xyxy(a: Box, b: Box) -> float:
     ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
     iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
     inter = ix * iy
@@ -68,20 +113,20 @@ def iou_xyxy(a, b):
     return inter / union if union > 0 else 0.0
 
 
-def mask_to_polygon(mask):
+def mask_to_polygon(mask: Mask) -> tuple[NDArray[np.float64] | None, int]:
     """Kontur eksternal terbesar. Return (polygon Nx2 piksel, jumlah komponen)."""
-    contours, _ = cv2.findContours(
+    found, _ = cv2.findContours(
         mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
-    contours = [c for c in contours if len(c) >= 3]
+    contours = [c for c in found if len(c) >= 3]
     if not contours:
         return None, 0
     best = max(contours, key=cv2.contourArea)
-    return best.reshape(-1, 2).astype(float), len(contours)
+    return best.reshape(-1, 2).astype(np.float64), len(contours)
 
 
 # ---------------------------------------------------------------- validasi split
-def check_leakage(coco):
+def check_leakage(coco: dict[str, CocoDataset]) -> dict[str, set[str]]:
     """Satu image_id tidak boleh muncul di lebih dari satu subset (daftar periksa panduan, 10.2)."""
     names = {s: {Path(i["file_name"]).stem for i in coco[s]["images"]} for s in SPLITS}
     bad = False
@@ -97,7 +142,7 @@ def check_leakage(coco):
     return names
 
 
-def check_split_csv(root, names):
+def check_split_csv(root: Path, names: dict[str, set[str]]) -> None:
     """Bandingkan penugasan subset di JSON dengan split.csv (kolom image_id, split)."""
     p = root / "split.csv"
     if not p.exists():
@@ -106,13 +151,13 @@ def check_split_csv(root, names):
         )
         return
     with p.open(newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
+        rows: list[dict[str, str]] = list(csv.DictReader(f))
     if not rows or not {"image_id", "split"} <= set(rows[0]):
         print(
             "[peringatan] split.csv tidak punya kolom image_id/split; verifikasi dilewati"
         )
         return
-    ref = {
+    ref: dict[str, str | None] = {
         Path(r["image_id"].strip()).stem: SPLIT_ALIASES.get(r["split"].strip().lower())
         for r in rows
     }
@@ -135,7 +180,7 @@ def check_split_csv(root, names):
 
 
 # ---------------------------------------------------------------- konversi
-def build_class_map(train_json):
+def build_class_map(train_json: CocoDataset) -> tuple[dict[int, int], dict[int, str]]:
     """Buang kategori placeholder Roboflow (supercategory 'none'); id kontigu dari 0."""
     cats = sorted(
         (c for c in train_json["categories"] if c.get("supercategory") != "none"),
@@ -145,14 +190,24 @@ def build_class_map(train_json):
     return id_map, {i: c["name"] for i, c in enumerate(cats)}
 
 
-def convert_split(split, coco, root, out, task, id_map, stats, bbox_ious, sizes):
+def convert_split(
+    split: str,
+    coco: dict[str, CocoDataset],
+    root: Path,
+    out: Path,
+    task: Task,
+    id_map: dict[int, int],
+    stats: Counter[str],
+    bbox_ious: list[float],
+    sizes: Counter[tuple[str, tuple[int, int]]],
+) -> None:
     data = coco[split]
     img_out = out / "images" / split
     lbl_out = out / "labels" / split
     img_out.mkdir(parents=True, exist_ok=True)
     lbl_out.mkdir(parents=True, exist_ok=True)
 
-    anns_by_img = {}
+    anns_by_img: dict[int, list[CocoAnnotation]] = {}
     for a in data["annotations"]:
         anns_by_img.setdefault(a["image_id"], []).append(a)
 
@@ -164,7 +219,7 @@ def convert_split(split, coco, root, out, task, id_map, stats, bbox_ious, sizes)
         shutil.copy2(src, img_out / name)
         sizes[(name.split("_")[0], (w, h))] += 1
 
-        lines = []
+        lines: list[str] = []
         for a in anns_by_img.get(im["id"], []):
             if a["category_id"] not in id_map:
                 stats["skip_cat"] += 1
@@ -174,9 +229,9 @@ def convert_split(split, coco, root, out, task, id_map, stats, bbox_ious, sizes)
 
             if task == "detect":
                 x, y, bw, bh = a["bbox"]
-                coco_box = (x, y, x + bw, y + bh)
-                box = coco_box
-                mb = None
+                coco_box: Box = (x, y, x + bw, y + bh)
+                box: Box = coco_box
+                mb: Box | None = None
                 if seg:
                     try:
                         mb = mask_bbox(to_binary_mask(seg, h, w))
@@ -232,14 +287,15 @@ def convert_split(split, coco, root, out, task, id_map, stats, bbox_ious, sizes)
             stats[f"{split}_empty_images"] += 1
 
 
-def main():
+def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default="dataset", type=Path)
     ap.add_argument("--out", default="dataset/detector", type=Path)
     ap.add_argument("--task", choices=["detect", "seg"], default="detect")
     args = ap.parse_args()
+    task: Task = args.task
 
-    coco = {
+    coco: dict[str, CocoDataset] = {
         s: json.loads((args.root / "annotations" / f"{s}.json").read_text())
         for s in SPLITS
     }
@@ -253,13 +309,15 @@ def main():
         shutil.rmtree(args.out / sub, ignore_errors=True)
     args.out.mkdir(parents=True, exist_ok=True)
 
-    stats, bbox_ious, sizes = Counter(), [], Counter()
+    stats: Counter[str] = Counter()
+    bbox_ious: list[float] = []
+    sizes: Counter[tuple[str, tuple[int, int]]] = Counter()
     for s in SPLITS:
         convert_split(
-            s, coco, args.root, args.out, args.task, id_map, stats, bbox_ious, sizes
+            s, coco, args.root, args.out, task, id_map, stats, bbox_ious, sizes
         )
 
-    cfg = {
+    cfg: dict[str, Any] = {
         "path": str(args.out.resolve()),
         "train": "images/train",
         "val": "images/val",
@@ -273,7 +331,7 @@ def main():
         print(f"  {k}: {stats[k]}")
 
     print("\nUkuran citra per sumber (lima teratas):")
-    by_src = {}
+    by_src: dict[str, Counter[str]] = {}
     for (src, wh), n in sizes.items():
         by_src.setdefault(src, Counter())[f"{wh[0]}x{wh[1]}"] += n
     for src, c in sorted(by_src.items()):
