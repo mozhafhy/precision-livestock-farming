@@ -1,0 +1,104 @@
+STATUS    : interrupted
+KODE KELUAR: 0xC000013A CTRL_C_EXIT (diinterupsi dengan Ctrl+C)
+UJUNG TRAINING: epoch selesai terakhir = 5 dari 100
+folder run ultralytics: D:\projects\1-riset-fekal-ayam\dataset\detector\runs\train-2
+
+
+--- exception tercatat worker ---
+Traceback (most recent call last):
+  File "D:\projects\1-riset-fekal-ayam\scripts\train_worker.py", line 316, in main
+    model.train(**kwargs)
+    ~~~~~~~~~~~^^^^^^^^^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\model.py", line 898, in train
+    self.trainer.train()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\trainer.py", line 262, in train
+    self._do_train()
+    ~~~~~~~~~~~~~~^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\trainer.py", line 517, in _do_train
+    for i, batch in pbar:
+                    ^^^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\utils\tqdm.py", line 379, in __iter__
+    for item in self.iterable:
+                ^^^^^^^^^^^^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\data\build.py", line 87, in __iter__
+    yield next(self.iterator)
+          ~~~~^^^^^^^^^^^^^^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 725, in __next__
+    data = self._next_data()
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1505, in _next_data
+    idx, data = self._get_data()
+                ~~~~~~~~~~~~~~^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1454, in _get_data
+    success, data = self._try_get_data()
+                    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1291, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\queue.py", line 210, in get
+    self.not_empty.wait(remaining)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "D:\projects\1-riset-fekal-ayam\env\Lib\threading.py", line 373, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt
+
+
+--- petunjuk ---
+* Worker dataloader mati. Coba --workers 0 untuk memastikan masalahnya di dataloader (umum di Windows) dan bukan di GPU.
+
+--- epoch terakhir (5) ---
+loss={'train/box_loss': 1.72098, 'train/cls_loss': 2.17817, 'train/dfl_loss': 1.74626}
+metrik={'metrics/precision(B)': 0.02113, 'metrics/recall(B)': 0.125, 'metrics/mAP50(B)': 0.00683, 'metrics/mAP50-95(B)': 0.00145, 'val/box_loss': 3.61718, 'val/cls_loss': 94.20618, 'val/dfl_loss': 18.27471}
+nan_loss=False alloc_mb=192.0 peak_mb=1881.7
+
+--- batch terakhir sebelum berhenti (terbaru di bawah) ---
+2026-10-15 16:56:15 epoch=6 step=74 alloc=156.3MB files=['KGL_0125.jpg', 'KGL_0282.jpg', 'KGL_0038.jpg', 'KGL_0203.jpg', 'KGL_0204.jpg', 'KGL_0004.jpg', 'KGL_0277.jpg', 'KGL_0086.jpg', 'KGL_0300.jpg', 'KGL_0132.jpg', 'KGL_0173.jpg', 'KGL_0225.jpg', 'KGL_0007.jpg', 'KGL_0127.jpg', 'KGL_0136.jpg', 'KGL_0046.jpg']
+2026-10-15 16:56:16 epoch=6 step=75 alloc=92.4MB files=['KGL_0273.jpg', 'KGL_0163.jpg', 'KGL_0181.jpg', 'KGL_0185.jpg', 'KGL_0002.jpg', 'KGL_0165.jpg', 'KGL_0302.jpg', 'KGL_0180.jpg', 'KGL_0285.jpg', 'KGL_0271.jpg', 'KGL_0084.jpg', 'KGL_0167.jpg', 'KGL_0104.jpg', 'KGL_0182.jpg', 'KGL_0147.jpg', 'KGL_0100.jpg']
+2026-10-15 16:56:16 epoch=6 step=76 alloc=168.4MB files=['KGL_0076.jpg', 'KGL_0168.jpg', 'KGL_0186.jpg', 'KGL_0019.jpg', 'KGL_0256.jpg', 'KGL_0139.jpg', 'KGL_0230.jpg', 'KGL_0260.jpg', 'KGL_0223.jpg', 'KGL_0133.jpg', 'KGL_0176.jpg', 'KGL_0218.jpg', 'KGL_0215.jpg', 'KGL_0119.jpg', 'KGL_0093.jpg', 'KGL_0238.jpg']
+2026-10-15 16:56:16 epoch=6 step=77 alloc=92.4MB files=['KGL_0066.jpg', 'KGL_0177.jpg', 'KGL_0122.jpg', 'KGL_0219.jpg', 'KGL_0237.jpg', 'KGL_0101.jpg', 'KGL_0236.jpg', 'KGL_0140.jpg', 'KGL_0281.jpg', 'KGL_0197.jpg', 'KGL_0024.jpg', 'KGL_0232.jpg', 'KGL_0124.jpg', 'KGL_0245.jpg', 'KGL_0077.jpg', 'KGL_0010.jpg']
+2026-10-15 16:56:17 epoch=6 step=78 alloc=156.3MB files=['KGL_0056.jpg', 'KGL_0017.jpg', 'KGL_0109.jpg', 'KGL_0213.jpg', 'KGL_0065.jpg', 'KGL_0015.jpg', 'KGL_0164.jpg', 'KGL_0045.jpg', 'KGL_0222.jpg', 'KGL_0196.jpg', 'KGL_0026.jpg', 'KGL_0097.jpg', 'KGL_0146.jpg', 'KGL_0266.jpg', 'KGL_0291.jpg', 'KGL_0126.jpg']
+
+--- GPU ---
+sampel terakhir: 2026-10-15 16:58:42,0,2097,4096,49,9.70,210,405,P8
+maks: suhu=64.0C VRAM=2621.0MiB daya=61.86W util=89.0%
+
+--- 40 baris konsol terakhir ---
+2026-10-15 16:58:41 | Traceback (most recent call last):
+2026-10-15 16:58:41 |   File "<frozen runpy>", line 203, in _run_module_as_main
+2026-10-15 16:58:41 |   File "<frozen runpy>", line 88, in _run_code
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\scripts\train_worker.py", line 335, in <module>
+2026-10-15 16:58:41 |     main()
+2026-10-15 16:58:41 |     ~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\scripts\train_worker.py", line 316, in main
+2026-10-15 16:58:41 |     model.train(**kwargs)
+2026-10-15 16:58:41 |     ~~~~~~~~~~~^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\model.py", line 898, in train
+2026-10-15 16:58:41 |     self.trainer.train()
+2026-10-15 16:58:41 |     ~~~~~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\trainer.py", line 262, in train
+2026-10-15 16:58:41 |     self._do_train()
+2026-10-15 16:58:41 |     ~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\engine\trainer.py", line 517, in _do_train
+2026-10-15 16:58:41 |     for i, batch in pbar:
+2026-10-15 16:58:41 |                     ^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\utils\tqdm.py", line 379, in __iter__
+2026-10-15 16:58:41 |     for item in self.iterable:
+2026-10-15 16:58:41 |                 ^^^^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\ultralytics\data\build.py", line 87, in __iter__
+2026-10-15 16:58:41 |     yield next(self.iterator)
+2026-10-15 16:58:41 |           ~~~~^^^^^^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 725, in __next__
+2026-10-15 16:58:41 |     data = self._next_data()
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1505, in _next_data
+2026-10-15 16:58:41 |     idx, data = self._get_data()
+2026-10-15 16:58:41 |                 ~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1454, in _get_data
+2026-10-15 16:58:41 |     success, data = self._try_get_data()
+2026-10-15 16:58:41 |                     ~~~~~~~~~~~~~~~~~~^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\site-packages\torch\utils\data\dataloader.py", line 1291, in _try_get_data
+2026-10-15 16:58:41 |     data = self._data_queue.get(timeout=timeout)
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\queue.py", line 210, in get
+2026-10-15 16:58:41 |     self.not_empty.wait(remaining)
+2026-10-15 16:58:41 |     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+2026-10-15 16:58:41 |   File "D:\projects\1-riset-fekal-ayam\env\Lib\threading.py", line 373, in wait
+2026-10-15 16:58:41 |     gotit = waiter.acquire(True, timeout)
+2026-10-15 16:58:41 | KeyboardInterrupt

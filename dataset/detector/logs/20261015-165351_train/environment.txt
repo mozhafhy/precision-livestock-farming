@@ -1,0 +1,127 @@
+waktu mulai : 2026-10-15T16:53:51
+perintah    : D:\projects\1-riset-fekal-ayam\scripts\train.py
+argumen     : {"data": "dataset/detector/data.yaml", "imgsz": 640, "epochs": 100, "batch": 16, "patience": 20, "seed": 42, "name": "train", "workers": null, "device": null, "no_amp": false, "resume": null, "debug_cuda": false, "log_root": null, "gpu_interval": 10.0, "stall_minutes": 10.0, "log_dir": null, "worker_module": "scripts.train_worker"}
+platform    : Windows-11-10.0.26200-SP0
+python      : 3.14.7 (D:\projects\1-riset-fekal-ayam\env\python.exe)
+cwd         : D:\projects\1-riset-fekal-ayam
+CONDA_PREFIX: D:\projects\1-riset-fekal-ayam\env
+
+== git ==
+2c384614ddaa5dfaa2391141464dba7b891bfd12
+zhafif/roi-detection/yolov8n
+M scripts/train.py
+ M scripts/train_worker.py
+?? dataset/detector/logs/
+
+== dataset ==
+train: 213 citra, 212 dengan label, 1 tanpa label (hard negative)
+val: 46 citra, 46 dengan label, 0 tanpa label (hard negative)
+test: 46 citra, 46 dengan label, 0 tanpa label (hard negative)
+
+== nvidia-smi ==
+Thu Oct 15 16:53:53 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 566.07                 Driver Version: 566.07         CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                  Driver-Model | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3050 ...  WDDM  |   00000000:01:00.0 Off |                  N/A |
+| N/A   44C    P0             15W /   65W |       0MiB /   4096MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+== pip freeze ==
+asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1783975656336/work
+Brotli @ file:///D:/bld/brotli-split_1788480196539/work
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1784717589373/work/certifi
+charset-normalizer @ file:///D:/bld/bld/rattler-build_charset-normalizer_1790766070/work
+cloudpickle @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_cloudpickle_1765303462/work
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1733218098505/work
+comm @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_comm_1753453984/work
+contourpy @ file:///D:/bld/bld/rattler-build_contourpy_1789746805/work
+cycler @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_cycler_1764466758/work
+debugpy @ file:///D:/bld/bld/rattler-build_debugpy_1789745272/work
+executing @ file:///home/conda/feedstock_root/build_artifacts/executing_1756729339227/work
+filelock @ file:///home/conda/feedstock_root/build_artifacts/filelock_1792017202815/work
+fonttools @ file:///D:/bld/fonttools_1790248534626/work
+fsspec @ file:///home/conda/feedstock_root/build_artifacts/fsspec_1790256769698/work
+h2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h2_1785796355/work
+hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1782283902770/work
+hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_idna_1790020377/work
+ipykernel @ file:///D:/bld/bld/rattler-build_ipykernel_1781101760/work
+ipython @ file:///D:/bld/bld/rattler-build_ipython_1788260382/work
+ipython_pygments_lexers @ file:///home/conda/feedstock_root/build_artifacts/ipython_pygments_lexers_1737123620466/work
+jedi @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jedi_1782251948/work
+Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jinja2_1764517220/work
+joblib @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_joblib_1788177170/work
+jupyter_client @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jupyter_client_1787929615/work
+jupyter_core @ file:///D:/bld/bld/rattler-build_jupyter_core_1760643889/work
+kiwisolver @ file:///D:/bld/bld/rattler-build_kiwisolver_1790081987/work
+MarkupSafe @ file:///D:/bld/bld/rattler-build_markupsafe_1791548984/work
+matplotlib==3.11.2
+matplotlib-inline @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-inline_1778264321245/work
+mpmath @ file:///home/conda/feedstock_root/build_artifacts/mpmath_1773661943568/work
+munkres==1.1.4
+narwhals @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_narwhals_1791209700/work
+nest-asyncio2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_nest-asyncio2_1790240046/work
+networkx @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_networkx_1790068597/work
+numpy @ file:///D:/bld/bld/rattler-build_numpy_1788731986/work/dist/numpy-2.5.3-cp314-cp314-win_amd64.whl#sha256=ddfc43c72a6a97abe50f0a3e5e16a15f4a600afa622510c1953fc47ae5fe35e4
+nvidia-ml-py @ file:///home/conda/feedstock_root/build_artifacts/nvidia-ml-py_1790360033711/work
+opencv-python==5.0.0
+opencv-python-headless==5.0.0
+optree @ file:///D:/bld/optree_1788504483634/work
+packaging @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_packaging_1785888127/work
+pandas @ file:///D:/bld/bld/rattler-build_pandas_1789803361/work
+parso @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_parso_1777722955/work
+pillow @ file:///D:/bld/bld/rattler-build_pillow_1789122658/work
+platformdirs @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_platformdirs_1790451469/work
+polars @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_polars_1791561649/work/polars-python
+polars-runtime-32 @ file:///D:/bld/bld/rattler-build_polars-runtime-32_1791561473/work/polars-runtime-32
+prompt_toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolkit_1785160527032/work
+psutil @ file:///D:/bld/bld/rattler-build_psutil_1789682043/work
+pure_eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_1789159354067/work
+pybind11 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pybind11_1786199539/work
+pybind11-global @ file:///D:/bld/bld/rattler-build_pybind11-global_1786199528/work
+pycocotools @ file:///D:/bld/pycocotools_1765844052620/work
+Pygments @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pygments_1786995678/work
+pyparsing @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pyparsing_1790063282/work
+PySide6==6.11.2
+PySocks @ file:///D:/bld/pysocks_1733217287171/work
+python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-dateutil_1751104122/work
+pywin32 @ file:///D:/bld/bld/rattler-build_pywin32_1789685721/work
+PyYAML @ file:///D:/bld/pyyaml_1770223253728/work
+pyzmq @ file:///D:/bld/bld/rattler-build_pyzmq_1789730188/work
+requests @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_requests_1778851103/work
+scikit-learn @ file:///D:/bld/bld/rattler-build_scikit-learn_1790072992/work/dist/scikit_learn-1.9.1-cp314-cp314-win_amd64.whl#sha256=88b7c64df117480b7fbb6e65c91510fab1010762b1ea546261f8f3a25bcf2425
+scipy @ file:///D:/bld/scipy-split_1790021762269/work/dist/scipy-1.18.1-cp314-cp314-win_amd64.whl#sha256=10ce7b122085b8a9e09a6cb4608def66be2b56a79cb2aff7fed571b9517718b7
+setuptools==81.0.0
+shiboken6==6.11.2
+six @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_six_1753199211/work
+stack_data @ file:///home/conda/feedstock_root/build_artifacts/stack_data_1733569443808/work
+sympy @ file:///home/conda/feedstock_root/build_artifacts/sympy_1771952241027/work
+threadpoolctl @ file:///home/conda/feedstock_root/build_artifacts/threadpoolctl_1789547442801/work
+torch @ file:///D:/bld/libtorch_1791365704473/work
+torchvision @ file:///D:/bld/bld/rattler-build_torchvision_1787586823/work
+tornado @ file:///D:/bld/tornado_1789910996522/work
+traitlets @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_traitlets_1785761789/work
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_typing_extensions_1783002732/work
+tzdata @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-tzdata_1791025923/work
+ultralytics @ file:///home/conda/feedstock_root/build_artifacts/ultralytics_1791909416720/work
+ultralytics-thop @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_ultralytics-thop_1790851729/work
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1789566614899/work
+wcwidth @ file:///D:/bld/bld/rattler-build_wcwidth_1790370047/work
+win_inet_pton @ file:///D:/bld/win_inet_pton_1733130564612/work
+
+== conda list --export ==
+<gagal: FileNotFoundError(2, 'The system cannot find the file specified', None, 2, None)>
