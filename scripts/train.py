@@ -99,8 +99,7 @@ class ConsoleTee:
     (satu baris final per bar + cuplikan berkala selama bar berjalan, supaya posisi terakhir sebelum crash tercatat)."""
 
     def __init__(self, path: Path, progress_every: float = 15.0) -> None:
-        with open(path, "w", encoding="utf-8", buffering=1) as f:
-            self.f: TextIO = f
+        self.f: TextIO = open(path, "w", encoding="utf-8", buffering=1)
         self.buf: bytes = b""
         self.tail: collections.deque[str] = collections.deque(maxlen=200)
         self.lock = threading.Lock()
@@ -185,7 +184,7 @@ def monitor(
                             f"--query-gpu={GPU_FIELDS}",
                             "--format=csv,noheader,nounits",
                         ],
-                        capture_output=True,
+                        check=False, capture_output=True,
                         text=True,
                         timeout=15,
                     )

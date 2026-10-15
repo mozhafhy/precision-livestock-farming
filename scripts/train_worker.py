@@ -114,8 +114,7 @@ class JsonlLog:
     """Satu objek JSON per baris, di-flush tiap tulis agar selamat dari proses yang mati mendadak."""
 
     def __init__(self, path: Path) -> None:
-        with open(path, "a", encoding="utf-8", buffering=1) as f:
-            self.f: TextIO = f
+        self.f: TextIO = open(path, "a", encoding="utf-8", buffering=1)
 
     def write(self, **kw: Any) -> None:
         rec: dict[str, Any] = {
@@ -239,8 +238,9 @@ def main() -> None:
     log_dir = Path(args.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(log_dir / "fault.log", "a", encoding="utf-8") as f:
-        fault_file: TextIO = f  # tetap terbuka selama proses hidup
+    fault_file: TextIO = open(
+        log_dir / "fault.log", "a", encoding="utf-8"
+    )  # tetap terbuka selama proses hidup
 
     faulthandler.enable(file=fault_file, all_threads=True)
     events = JsonlLog(log_dir / "events.jsonl")
@@ -289,6 +289,10 @@ def main() -> None:
         if args.resume:
             model = YOLO(args.resume)
             kwargs = {"resume": True}
+
+            if args.workers is not None:
+                kwargs["workers"] = args.workers
+
         else:
             data = Path(args.data).resolve()
             model = YOLO("yolov8n.pt")  # bobot pralatih COCO
