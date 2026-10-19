@@ -1,0 +1,26 @@
+{
+  "preset": "otsu",
+  "split": "test",
+  "params": {
+    "color_space": "gray",
+    "channel": 0,
+    "blur_ksize": 5,
+    "close_ksize": 5,
+    "min_area_frac": 0.002,
+    "max_area_frac": 0.95,
+    "polarity": "auto",
+    "pad_frac": 0.0,
+    "roi_mode": "union"
+  },
+  "metrics": {
+    "n": 46.0,
+    "mean_iou": 0.22924271287392076,
+    "median_iou": 0.15358737244897563,
+    "mean_coverage": 0.9840565094404549,
+    "hit_rate_cov90": 0.9347826086956522,
+    "hit_rate_iou50": 0.10869565217391304,
+    "mean_roi_frac": 0.8526417445374888,
+    "fallback_rate": 0.0,
+    "ms_per_image": 1.0727130435913315
+  }
+}
