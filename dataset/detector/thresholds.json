@@ -1,0 +1,22 @@
+{
+  "conf": 0.47,
+  "iou": 0.6,
+  "imgsz": 640,
+  "weights": "dataset/detector/runs/train-2/weights/best.pt",
+  "f1_val_at_conf": 0.7291666666666665,
+  "val": {
+    "precision": 0.7608695652173914,
+    "recall": 0.7291666666666666,
+    "f1": 0.7446808510638298,
+    "mean_iou": 0.8485213790621077,
+    "count_acc": 0.6956521739130435,
+    "crowded_n": 1,
+    "crowded_count_acc": 1.0,
+    "no_detection_all": 0.17391304347826086,
+    "no_detection_on_positives": 0.17391304347826086,
+    "fp_on_negatives": null,
+    "n_images": 46,
+    "n_positive": 46,
+    "n_negative": 0
+  }
+}
