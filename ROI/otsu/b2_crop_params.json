@@ -1,0 +1,26 @@
+{
+  "params": {
+    "norm_mode": "gray_world",
+    "color_space": "lab",
+    "channel": 2,
+    "blur_ksize": 5,
+    "polarity": "bright",
+    "open_ksize": 0,
+    "close_ksize": 15,
+    "min_area_frac": 0.01,
+    "max_area_frac": 0.95,
+    "padding_frac": 0.0
+  },
+  "val_metrics": {
+    "n_images": 46,
+    "precision": 0.1724137931034483,
+    "recall": 0.20833333333333334,
+    "f1": 0.18867924528301888,
+    "map50": 0.04844961240310078,
+    "mean_iou": 0.7291453414184702,
+    "crop_success_rate": 0.8333333333333334,
+    "count_accuracy": 0.7391304347826086,
+    "no_detection_rate": 0.021739130434782608,
+    "mean_roi_frac": 0.7466634836679235
+  }
+}
