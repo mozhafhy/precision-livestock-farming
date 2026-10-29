@@ -1,0 +1,3 @@
+experiment,variant,best_epoch,best_val_iou,best_val_dice,target_achieved
+E3,raw,58,0.7863,0.8616,Belum Tercapai
+E4,gray_world,27,0.7708,0.8513,Belum Tercapai
