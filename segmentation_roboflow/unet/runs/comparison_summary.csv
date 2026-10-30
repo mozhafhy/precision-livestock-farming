@@ -1,0 +1,5 @@
+mode,variant,best_epoch,best_val_iou,best_val_dice,target_85_achieved
+bbox_based,raw,16,0.8582,0.9215,YA (>=85%)
+bbox_based,gray_world,17,0.8540,0.9188,YA (>=85%)
+mask_based,raw,23,0.7532,0.8474,TIDAK
+mask_based,gray_world,22,0.7597,0.8468,TIDAK
