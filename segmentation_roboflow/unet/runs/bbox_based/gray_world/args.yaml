@@ -1,0 +1,13 @@
+batch_size: 16
+device: cuda
+encoder: mobilenet_v2
+epochs: 60
+imgsz: 512
+learning_rate: 0.001
+loss: BCEWithLogitsLoss + DiceLoss
+mode: bbox_based
+optimizer: AdamW
+patience: 12
+scheduler: CosineAnnealingLR
+variant: gray_world
+weight_decay: 0.0001
