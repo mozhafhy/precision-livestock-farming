@@ -10,4 +10,10 @@ dependencies:
   - matplotlib
   - scikit-learn
   - pandas
+  - pyyaml
+  - pycocotools
+  - ultralytics
+  - torchvision
+  - segmentation-models-pytorch
+  - albumentations
 prefix: D:\projects\1-riset-fekal-ayam\env
