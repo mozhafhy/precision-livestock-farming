@@ -1,0 +1,69 @@
+10:08:38 | INFO    | >> Build raw/bbox_based/train
+10:08:42 | INFO    | train: 213 sampel, 323 polygon, 1 tanpa polygon (background)
+10:08:42 | INFO    | OK Build raw/bbox_based/train (3.6 dtk)
+10:08:42 | INFO    | >> Build raw/bbox_based/val
+10:08:43 | INFO    | val: 46 sampel, 59 polygon, 0 tanpa polygon (background)
+10:08:43 | INFO    | OK Build raw/bbox_based/val (0.7 dtk)
+10:08:43 | INFO    | >> Build raw/bbox_based/test
+10:08:43 | INFO    | test: 46 sampel, 74 polygon, 0 tanpa polygon (background)
+10:08:43 | INFO    | OK Build raw/bbox_based/test (0.8 dtk)
+10:08:43 | INFO    | Dataset siap: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\raw_bbox_based (305 sampel)
+10:09:28 | INFO    | >> Build raw/mask_based/train
+10:09:29 | INFO    | train: 213 sampel, 323 polygon, 1 tanpa polygon (background)
+10:09:29 | INFO    | OK Build raw/mask_based/train (1.4 dtk)
+10:09:29 | INFO    | >> Build raw/mask_based/val
+10:09:30 | INFO    | val: 46 sampel, 59 polygon, 0 tanpa polygon (background)
+10:09:30 | INFO    | OK Build raw/mask_based/val (0.3 dtk)
+10:09:30 | INFO    | >> Build raw/mask_based/test
+10:09:30 | INFO    | test: 46 sampel, 74 polygon, 0 tanpa polygon (background)
+10:09:30 | INFO    | OK Build raw/mask_based/test (0.3 dtk)
+10:09:30 | INFO    | Dataset siap: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\raw_mask_based (305 sampel)
+10:09:30 | INFO    | >> Build raw/bbox_based/train
+10:09:31 | INFO    | train: 213 sampel, 323 polygon, 1 tanpa polygon (background)
+10:09:31 | INFO    | OK Build raw/bbox_based/train (1.2 dtk)
+10:09:31 | INFO    | >> Build raw/bbox_based/val
+10:09:31 | INFO    | val: 46 sampel, 59 polygon, 0 tanpa polygon (background)
+10:09:31 | INFO    | OK Build raw/bbox_based/val (0.2 dtk)
+10:09:31 | INFO    | >> Build raw/bbox_based/test
+10:09:32 | INFO    | test: 46 sampel, 74 polygon, 0 tanpa polygon (background)
+10:09:32 | INFO    | OK Build raw/bbox_based/test (0.2 dtk)
+10:09:32 | INFO    | Dataset siap: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\raw_bbox_based (305 sampel)
+10:09:32 | INFO    | >> Build gray_world/mask_based/train
+10:09:35 | INFO    | train: 213 sampel, 323 polygon, 1 tanpa polygon (background)
+10:09:35 | INFO    | OK Build gray_world/mask_based/train (3.0 dtk)
+10:09:35 | INFO    | >> Build gray_world/mask_based/val
+10:09:35 | INFO    | val: 46 sampel, 59 polygon, 0 tanpa polygon (background)
+10:09:35 | INFO    | OK Build gray_world/mask_based/val (0.6 dtk)
+10:09:35 | INFO    | >> Build gray_world/mask_based/test
+10:09:36 | INFO    | test: 46 sampel, 74 polygon, 0 tanpa polygon (background)
+10:09:36 | INFO    | OK Build gray_world/mask_based/test (0.6 dtk)
+10:09:36 | INFO    | Dataset siap: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\gray_world_mask_based (305 sampel)
+10:09:36 | INFO    | >> Build gray_world/bbox_based/train
+10:09:37 | INFO    | train: 213 sampel, 323 polygon, 1 tanpa polygon (background)
+10:09:37 | INFO    | OK Build gray_world/bbox_based/train (1.4 dtk)
+10:09:37 | INFO    | >> Build gray_world/bbox_based/val
+10:09:38 | INFO    | val: 46 sampel, 59 polygon, 0 tanpa polygon (background)
+10:09:38 | INFO    | OK Build gray_world/bbox_based/val (0.3 dtk)
+10:09:38 | INFO    | >> Build gray_world/bbox_based/test
+10:09:38 | INFO    | test: 46 sampel, 74 polygon, 0 tanpa polygon (background)
+10:09:38 | INFO    | OK Build gray_world/bbox_based/test (0.3 dtk)
+10:09:38 | INFO    | Dataset siap: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\gray_world_bbox_based (305 sampel)
+10:21:43 | INFO    | >> Build raw/mask_based/train
+10:21:45 | INFO    | train: 213 sampel, 323 polygon, 1 tanpa polygon (background)
+10:21:45 | INFO    | OK Build raw/mask_based/train (1.4 dtk)
+10:21:45 | INFO    | >> Build raw/mask_based/val
+10:21:45 | INFO    | val: 46 sampel, 59 polygon, 0 tanpa polygon (background)
+10:21:45 | INFO    | OK Build raw/mask_based/val (0.3 dtk)
+10:21:45 | INFO    | >> Build raw/mask_based/test
+10:21:45 | INFO    | test: 46 sampel, 74 polygon, 0 tanpa polygon (background)
+10:21:45 | INFO    | OK Build raw/mask_based/test (0.3 dtk)
+10:21:45 | INFO    | Dataset siap: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\raw_mask_based (305 sampel)
+10:21:54 | INFO    | >> Training smoke_raw_mask_based
+10:22:13 | INFO    | Menyiapkan model dan dataloader
+10:22:35 | INFO    | Training dimulai | epochs=3 batch=8 imgsz=512 device=cuda:0
+10:23:34 | INFO    | Epoch 1/3 | mask mAP50=0.0826 mAP50-95=0.0305 | val seg_loss=5.5746
+10:23:40 | INFO    | Epoch 2/3 | mask mAP50=0.0253 mAP50-95=0.0093 | val seg_loss=5.2270
+10:23:45 | INFO    | Epoch 3/3 | mask mAP50=0.1843 mAP50-95=0.0738 | val seg_loss=4.1762
+10:23:53 | INFO    | Evaluasi final (best.pt) | mask mAP50=0.1806 mAP50-95=0.0730 | val seg_loss=nan
+10:23:55 | INFO    | Training selesai | bobot terbaik: D:\projects\1-riset-fekal-ayam\segmentation\yolo\runs\smoke_raw_mask_based\weights\best.pt
+10:24:00 | INFO    | OK Training smoke_raw_mask_based (125.9 dtk)
