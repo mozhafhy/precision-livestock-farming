@@ -1,7 +1,8 @@
 """E0 langkah 5: pilih 100 citra Mendeley terstratifikasi, tanpa kembaran citra Kaggle."""
 
 import pandas as pd
-from common import (
+
+from .e0_common import (
     DATASET_DIR,
     EXTERNAL_SIZE,
     MAX_HAMMING,
@@ -39,6 +40,11 @@ def main() -> None:
 
     leaked = find_leaked_ids(pool, read_hash_groups()["phash"].tolist())
     clean_pool = pool[~pool["image_id"].isin(leaked)]
+    print(f"Pool {len(pool)}; kembar dengan Kaggle: {len(leaked)}; bersih: {len(clean_pool)}")
+    if len(clean_pool) < EXTERNAL_SIZE:
+        raise ValueError(
+            f"Pool bersih {len(clean_pool)} < target {EXTERNAL_SIZE}; jalankan diagnosa pHash"
+        )
     external = sample_stratified(clean_pool, EXTERNAL_SIZE, SPLIT_SEED)
 
     write_csv(

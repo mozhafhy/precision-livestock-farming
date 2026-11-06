@@ -5,7 +5,8 @@ import sys
 from datetime import datetime
 
 import yaml
-from common import (
+
+from .e0_common import (
     CONFIG_DIR,
     EXTERNAL_SIZE,
     FROZEN_SPLIT_FILES,
@@ -17,7 +18,7 @@ from common import (
     SUBSET_SIZE,
     sha256_of,
 )
-from p4_degrade import DOWNSCALE_NAME, MAX_SIDE, UPSCALE_NAME
+from .p4_degrade import DOWNSCALE_NAME, MAX_SIDE, UPSCALE_NAME
 
 # USULAN: ubah sesuai keputusanmu SEBELUM dijalankan; nilai ini lalu dibekukan.
 TRAINING_SEEDS = [0, 1, 2]

@@ -1,7 +1,8 @@
 """E0: verifikasi kriteria selesai dan keutuhan file beku."""
 import pandas as pd
 import yaml
-from common import PROTOCOL_FILE, SPLIT_SIZES, SPLITS_DIR, sha256_of
+
+from .e0_common import PROTOCOL_FILE, SPLIT_SIZES, SPLITS_DIR, sha256_of
 
 PROPORTION_TOLERANCE = 0.02
 

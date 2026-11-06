@@ -2,7 +2,8 @@
 import cv2
 import numpy as np
 import pandas as pd
-from common import DATASET_DIR, SPLITS_DIR, index_images
+
+from .e0_common import DATASET_DIR, SPLITS_DIR, index_images
 
 MAX_SIDE = 100
 DOWNSCALE_NAME = "INTER_AREA"
