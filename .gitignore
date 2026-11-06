@@ -18,6 +18,7 @@ venv/
 
 # Dataset
 dataset/original-dataset/
+dataset/degraded/
 *unet-data*
 *yolo-data*
 
