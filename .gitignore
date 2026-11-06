@@ -18,6 +18,8 @@ venv/
 
 # Dataset
 dataset/original-dataset/
+*unet-data*
+*yolo-data*
 
 # Temp folder
 tmp/
