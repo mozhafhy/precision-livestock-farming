@@ -1,6 +1,0 @@
-path: D:\projects\1-riset-fekal-ayam\segmentation\yolo\yolo_data\gray_world_bbox_based
-train: images/train
-val: images/val
-test: images/test
-names:
-  0: excreta
