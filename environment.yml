@@ -16,4 +16,5 @@ dependencies:
   - torchvision
   - segmentation-models-pytorch
   - albumentations
+  - imagehash
 prefix: D:\projects\1-riset-fekal-ayam\env
