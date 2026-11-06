@@ -1,8 +1,13 @@
 """E0: bersihkan nama gambar Roboflow dan sinkronkan COCO JSON.
 
-Jalankan dari root proyek:  python -m scripts.e0_clean_dataset
+Jalankan dari root proyek:
+    python -m scripts.e0.p0_clean_dataset kgl
+    python -m scripts.e0.p0_clean_dataset abc --classes cocci healthy --strip-prefix ""
 """
 
+from __future__ import annotations
+
+import argparse
 import csv
 import json
 import re
@@ -11,17 +16,46 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
-SOURCE = "kgl"
-RAW_DIR = Path("tmp/res") / SOURCE
-IMAGE_OUT_DIR = Path("dataset/raw") / SOURCE
-ANNOTATION_OUT_FILE = Path("dataset/annotations") / SOURCE / "annotations.coco.json"
-METADATA_FILE = Path("dataset") / f"{SOURCE}_metadata.csv"
+RES_ROOT = Path("tmp/res")
+DATASET_ROOT = Path("dataset")
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 ROBOFLOW_SEPARATOR = ".rf."
 INDEX_WIDTH = 4
-# "pcr" = awalan opsional (mis. pcrncd, pcrsalmo); kelas tetap bagian setelahnya.
-CLASS_PATTERN = re.compile(r"^(?:pcr)?(cocci|healthy|salmo|ncd)", re.IGNORECASE)
+DEFAULT_CLASSES = ("cocci", "healthy", "salmo", "ncd")
+DEFAULT_STRIP_PREFIX = "pcr"
+
+
+@dataclass(frozen=True)
+class Config:
+    source: str
+    raw_dir: Path
+    image_out_dir: Path
+    annotation_out_file: Path
+    metadata_file: Path
+    class_pattern: re.Pattern
+
+    @classmethod
+    def build(
+        cls, source: str, classes=DEFAULT_CLASSES, strip_prefix=DEFAULT_STRIP_PREFIX
+    ) -> Config:
+        if not classes:
+            raise ValueError("Daftar kelas tidak boleh kosong")
+        alternatives = "|".join(re.escape(c) for c in classes)
+        optional_prefix = f"(?:{re.escape(strip_prefix)})?" if strip_prefix else ""
+        return cls(
+            source=source,
+            raw_dir=RES_ROOT / source,
+            image_out_dir=DATASET_ROOT / "raw" / source,
+            annotation_out_file=DATASET_ROOT
+            / "annotations"
+            / source
+            / "annotations.coco.json",
+            metadata_file=DATASET_ROOT / f"{source}_metadata.csv",
+            class_pattern=re.compile(
+                rf"^{optional_prefix}({alternatives})", re.IGNORECASE
+            ),
+        )
 
 
 @dataclass(frozen=True)
@@ -29,7 +63,7 @@ class CleanImage:
     raw_name: str
     image_id: str
     new_name: str
-    label: str
+    label: str | None = None
 
 
 def extract_prefix(raw_name: str) -> str:
@@ -39,10 +73,10 @@ def extract_prefix(raw_name: str) -> str:
     return prefix
 
 
-def extract_label(prefix: str) -> str:
-    match = CLASS_PATTERN.match(prefix)
+def extract_label(prefix: str, class_pattern: re.Pattern) -> str | None:
+    match = class_pattern.match(prefix)
     if not match:
-        raise ValueError(f"Kelas tidak dikenali dari prefix: {prefix}")
+        return None
     return match.group(1).lower()
 
 
@@ -86,16 +120,16 @@ def index_coco_entries(documents: list[dict]) -> dict[str, tuple[dict, list[dict
     return entries
 
 
-def plan_clean_images(raw_names) -> list[CleanImage]:
+def plan_clean_images(raw_names, config: Config) -> list[CleanImage]:
     plan = []
     for index, raw_name in enumerate(sorted(raw_names)):
-        image_id = f"{SOURCE.upper()}_{index:0{INDEX_WIDTH}d}"
+        image_id = f"{config.source.upper()}_{index:0{INDEX_WIDTH}d}"
         plan.append(
             CleanImage(
                 raw_name=raw_name,
                 image_id=image_id,
                 new_name=image_id + Path(raw_name).suffix.lower(),
-                label=extract_label(extract_prefix(raw_name)),
+                label=extract_label(extract_prefix(raw_name), config.class_pattern),
             )
         )
     return plan
@@ -113,28 +147,39 @@ def build_coco(categories, plan, coco_entries) -> dict:
     return {"categories": categories, "images": images, "annotations": annotations}
 
 
-def refuse_overwrite() -> None:
-    image_dir_in_use = IMAGE_OUT_DIR.exists() and any(IMAGE_OUT_DIR.iterdir())
-    if image_dir_in_use or ANNOTATION_OUT_FILE.exists() or METADATA_FILE.exists():
+def refuse_overwrite(config: Config) -> None:
+    image_dir_in_use = config.image_out_dir.exists() and any(
+        config.image_out_dir.iterdir()
+    )
+    if (
+        image_dir_in_use
+        or config.annotation_out_file.exists()
+        or config.metadata_file.exists()
+    ):
         raise FileExistsError(
-            "Keluaran sudah ada; hapus manual sebelum menjalankan ulang"
+            f"Keluaran untuk '{config.source}' sudah ada; "
+            "hapus manual sebelum menjalankan ulang"
         )
 
 
-def copy_images(plan: list[CleanImage], images_on_disk: dict[str, Path]) -> None:
-    IMAGE_OUT_DIR.mkdir(parents=True)
+def copy_images(
+    plan: list[CleanImage], images_on_disk: dict[str, Path], config: Config
+) -> None:
+    config.image_out_dir.mkdir(parents=True, exist_ok=True)
     for item in plan:
-        shutil.copy2(images_on_disk[item.raw_name], IMAGE_OUT_DIR / item.new_name)
+        shutil.copy2(
+            images_on_disk[item.raw_name], config.image_out_dir / item.new_name
+        )
 
 
-def write_coco(coco: dict) -> None:
-    ANNOTATION_OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    ANNOTATION_OUT_FILE.write_text(json.dumps(coco), encoding="utf-8")
+def write_coco(coco: dict, config: Config) -> None:
+    config.annotation_out_file.parent.mkdir(parents=True, exist_ok=True)
+    config.annotation_out_file.write_text(json.dumps(coco), encoding="utf-8")
 
 
-def write_metadata(plan: list[CleanImage]) -> None:
-    METADATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with METADATA_FILE.open("w", newline="", encoding="utf-8") as file:
+def write_metadata(plan: list[CleanImage], config: Config) -> None:
+    config.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+    with config.metadata_file.open("w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(["image_id", "class", "raw_name"])
         writer.writerows((i.image_id, i.label, i.raw_name) for i in plan)
@@ -154,21 +199,45 @@ def report(plan, only_on_disk, only_in_json) -> None:
         )
 
 
-def main() -> None:
-    refuse_overwrite()
-    images_on_disk = index_images_on_disk(RAW_DIR)
-    documents = load_coco_documents(RAW_DIR)
+def parse_args(argv=None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=(__doc__ or "Cleaner").splitlines()[0])
+    parser.add_argument("source", help="nama subfolder di tmp/res/ (mis. kgl)")
+    parser.add_argument(
+        "--classes",
+        nargs="+",
+        default=list(DEFAULT_CLASSES),
+        help=f"daftar kelas valid (default: {' '.join(DEFAULT_CLASSES)})",
+    )
+    parser.add_argument(
+        "--strip-prefix",
+        default=DEFAULT_STRIP_PREFIX,
+        help="awalan opsional sebelum nama kelas; string kosong untuk menonaktifkan",
+    )
+    return parser.parse_args(argv)
+
+
+def run(config: Config) -> None:
+    if not config.raw_dir.is_dir():
+        raise FileNotFoundError(f"Source tidak ditemukan: {config.raw_dir}")
+    refuse_overwrite(config)
+    images_on_disk = index_images_on_disk(config.raw_dir)
+    documents = load_coco_documents(config.raw_dir)
     coco_entries = index_coco_entries(documents)
 
     synced_names = images_on_disk.keys() & coco_entries.keys()
-    plan = plan_clean_images(synced_names)
+    plan = plan_clean_images(synced_names, config)
 
-    copy_images(plan, images_on_disk)
-    write_coco(build_coco(shared_categories(documents), plan, coco_entries))
-    write_metadata(plan)
+    copy_images(plan, images_on_disk, config)
+    write_coco(build_coco(shared_categories(documents), plan, coco_entries), config)
+    write_metadata(plan, config)
     report(
         plan, images_on_disk.keys() - synced_names, coco_entries.keys() - synced_names
     )
+
+
+def main(argv=None) -> None:
+    args = parse_args(argv)
+    run(Config.build(args.source, args.classes, args.strip_prefix))
 
 
 if __name__ == "__main__":
