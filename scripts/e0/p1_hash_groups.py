@@ -5,7 +5,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from common import (
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
+
+from .e0_common import (
     DATASET_DIR,
     HASH_GROUPS_FILE,
     IMAGE_SUFFIXES,
@@ -17,8 +20,6 @@ from common import (
     read_metadata,
     write_csv,
 )
-from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import connected_components
 
 KGL_IMAGE_DIR = DATASET_DIR / "raw" / "kgl"
 
