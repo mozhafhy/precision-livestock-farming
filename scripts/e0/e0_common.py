@@ -1,4 +1,5 @@
 """Konstanta dan fungsi bersama untuk skrip E0."""
+
 import hashlib
 from pathlib import Path
 from typing import Any
@@ -9,12 +10,22 @@ import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 
+E0_RESULTS_DIR = Path("results/E0_protokol")
 DATASET_DIR = Path("dataset")
-SPLITS_DIR = DATASET_DIR / "splits"
-CONFIG_DIR = Path("config")
+
+SPLITS_DIR = E0_RESULTS_DIR / "splits"
+
+CONFIG_DIR = E0_RESULTS_DIR / "config"
 PROTOCOL_FILE = CONFIG_DIR / "protocol.yaml"
+
 HASH_GROUPS_FILE = SPLITS_DIR / "hash_groups.csv"
-FROZEN_SPLIT_FILES = ["train.csv", "val.csv", "test.csv", "external_mendeley.csv", "hash_groups.csv"]
+FROZEN_SPLIT_FILES = [
+    "train.csv",
+    "val.csv",
+    "test.csv",
+    "external_mendeley.csv",
+    "hash_groups.csv",
+]
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 SPLIT_SEED = 42
@@ -69,29 +80,55 @@ def close_pairs(bits_a: np.ndarray, bits_b: np.ndarray, max_distance: int):
     ones_b = bits_b.sum(axis=1)
     for start in range(0, len(bits_a), CHUNK_ROWS):
         block = bits_a[start : start + CHUNK_ROWS]
-        distances = block.sum(axis=1)[:, None] + ones_b[None, :] - 2 * (block @ bits_b.T)
+        distances = (
+            block.sum(axis=1)[:, None] + ones_b[None, :] - 2 * (block @ bits_b.T)
+        )
         rows, cols = np.nonzero(distances <= max_distance)
         yield from zip((rows + start).tolist(), cols.tolist())
 
 
-def allocate_quotas(class_counts: dict[Any, int], total: int) -> dict[str, int]:
+def allocate_quotas(class_counts: dict[Any, int], total: int) -> dict[Any, int]:
     """Jatah per kelas proporsional (largest remainder), jumlahnya tepat `total`."""
     population = sum(class_counts.values())
-    if total > population:
-        raise ValueError(f"Butuh {total} citra, tersedia {population}")
+
+    # Perbaikan: Tangani kasus populasi 0 untuk menghindari ZeroDivisionError
+    if population == 0 or total > population:
+        return {label: 0 for label in class_counts}
+
     exact = {label: total * count / population for label, count in class_counts.items()}
     quotas = {label: int(value) for label, value in exact.items()}
-    by_remainder = sorted(exact, key=lambda label: exact[label] - quotas[label], reverse=True)
+
+    by_remainder = sorted(
+        exact, key=lambda label: exact[label] - quotas[label], reverse=True
+    )
+
     for label in by_remainder[: total - sum(quotas.values())]:
         quotas[label] += 1
+
     return quotas
 
 
 def sample_stratified(frame: pd.DataFrame, total: int, seed: int) -> pd.DataFrame:
-    quotas = allocate_quotas(frame["class"].value_counts().to_dict(), total)
+    # Early exit jika dataframe kosong atau total tidak valid
+    if frame.empty or total <= 0:
+        return frame.iloc[:0]
+
+    # KISS: Buat Series sementara dimana null diubah menjadi teks biasa.
+    # Ini menjamin null terikut dalam groupby dan aman dari KeyError pada dictionary.
+    stratify_col = frame["class"].fillna("__MISSING__")
+
+    # Hitung kuota menggunakan Series sementara
+    quotas = allocate_quotas(stratify_col.value_counts().to_dict(), total)
+
+    # Lakukan sampling
     parts = [
-        members.sample(n=quotas[str(label)], random_state=seed)
-        for label, members in frame.groupby("class")
+        members.sample(n=quotas[label], random_state=seed)
+        for label, members in frame.groupby(stratify_col)
+        if quotas.get(label, 0) > 0  # Pastikan tidak sampling 0 data
     ]
+
+    # Tangani kasus jika semua kuota adalah 0 (misal: total > population)
+    if not parts:
+        return frame.iloc[:0]
+
     return pd.concat(parts).sort_values("image_id").reset_index(drop=True)
-  
