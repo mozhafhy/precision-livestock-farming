@@ -24,3 +24,6 @@ dataset/degraded/
 
 # Temp folder
 tmp/
+
+# Model pt file
+*.pt
