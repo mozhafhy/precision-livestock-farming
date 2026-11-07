@@ -1,0 +1,4 @@
+Domain Evaluasi,Jumlah Citra,Karakteristik Domain,IoU Ekskreta,DSC Ekskreta,mIoU,Delta IoU (vs In-Domain),Ketahanan
+In-Domain (Kaggle Test),225,"Resolusi baku 224x224, latar kandang standar",0.8639,0.9234,0.9181,0.0000 (0.00%),Baseline
+Eksternal (Mendeley Data),100,"Kamera berbeda, variasi iluminasi & jarak tangkap",0.7778,0.8667,0.8629,-0.0862 (-9.98%),Tinggi
+Terdegradasi (Sintetis 100px),225,Resolusi rendah ekstrem (downscale 100px -> upscale),0.8499,0.9144,0.9096,-0.0141 (-1.63%),Tinggi

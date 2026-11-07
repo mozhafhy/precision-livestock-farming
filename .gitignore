@@ -27,3 +27,5 @@ tmp/
 
 # Model pt file
 *.pt
+
+*.pth

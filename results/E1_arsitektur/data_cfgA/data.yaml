@@ -1,0 +1,6 @@
+path: /content/drive/MyDrive/precision-livestock-farming/results/E1_arsitektur/data_cfgA
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: excreta

@@ -23,7 +23,11 @@ MODELS = ("yolov8n-seg", "yolov8s-seg", "unet-mobilenetv2")
 SPLITS = ("train", "val", "test")
 
 # Konfigurasi C = normalisasi spasial (ROI crop + letterbox) + spektral (Gray World)
-CONFIGS = {"C": {"spatial": True, "spectral": True}}
+CONFIGS = {
+    "A": {"spatial": False, "spectral": False},
+    "B": {"spatial": True, "spectral": False},
+    "C": {"spatial": True, "spectral": True},
+}
 
 ROI_MARGIN = 0.10  # margin relatif di sekeliling union bbox saat auto-crop
 PAD_VALUE = 114  # warna bingkai letterbox (konvensi YOLO)
@@ -46,7 +50,7 @@ def input_size(proto: dict) -> int:
 def read_split(name: str) -> list[str]:
     """Daftar nama file citra pada results/E0_protokol/splits/<name>.csv."""
     df = pd.read_csv(SPLITS_DIR / f"{name}.csv")
-    for col in ("file_name", "filename", "image", "image_path", "path"):
+    for col in ("file_name", "filename", "image", "image_path", "path", "image_id"):
         if col in df.columns:
             return df[col].astype(str).tolist()
     raise KeyError(f"{name}.csv: tidak ada kolom nama file (kolom: {list(df.columns)})")
