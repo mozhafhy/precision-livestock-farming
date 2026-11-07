@@ -37,6 +37,7 @@ class CocoIndex:
         with open(json_path, encoding="utf-8") as f:
             coco = json.load(f)
         self.by_name = {Path(im["file_name"]).name: im for im in coco["images"]}
+        self.by_name.update({Path(im["file_name"]).stem: im for im in coco["images"]})
         self.anns: dict[int, list[dict]] = {}
         for a in coco["annotations"]:
             if category_ids is None or a["category_id"] in category_ids:
