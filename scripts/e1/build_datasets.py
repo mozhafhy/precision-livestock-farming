@@ -22,7 +22,6 @@ from pathlib import Path
 import cv2
 import numpy as np
 import yaml
-from preprocessing import CocoIndex, apply_to_mask, load_rgb, preprocess_image, save_rgb
 
 from .common import (
     COCO_JSON,
@@ -34,6 +33,13 @@ from .common import (
     input_size,
     load_protocol,
     read_split,
+)
+from .preprocessing import (
+    CocoIndex,
+    apply_to_mask,
+    load_rgb,
+    preprocess_image,
+    save_rgb,
 )
 
 
