@@ -20,6 +20,26 @@ E1_DIR = ROOT / "results" / "E1_arsitektur"
 E8_DIR = ROOT / "results" / "E8_banyuwangi"
 
 CANDIDATE_DIRS = [
+    ROOT / "dataset" / "banyuwangi",
+    ROOT / "dataset" / "banyuwangi",
+    Path(
+        "/content/drive/MyDrive/precision-livestock-farming/dataset/banyuwangi"
+    ),
+    Path(
+        "/content/drive/MyDrive/precision-livestock-farming/dataset/banyuwangi"
+    ),
+    Path("/content/drive/MyDrive/dataset/banyuwangi"),
+    Path("/content/drive/MyDrive/dataset/banyuwangi"),
+    Path(
+        "D:/Richard/Semester 5/precision-livestock-farming/dataset/banyuwangi"
+    ),
+    Path(
+        "D:/Richard/Semester 5/precision-livestock-farming/dataset/banyuwangi"
+    ),
+    Path("/content/drive/MyDrive/Dataset Mitra Banyuwangi/JPG IMG"),
+    Path("/content/drive/MyDrive/Dataset Mitra Banyuwangi"),
+    Path("D:/Richard/Semester 5/Dataset Mitra Banyuwangi/JPG IMG"),
+    Path("D:/Richard/Semester 5/Dataset Mitra Banyuwangi"),
     ROOT / "dataset" / "raw" / "banyuwangi",
     ROOT / "dataset" / "banyuwangi",
     Path("/content/drive/MyDrive/precision-livestock-farming/dataset/banyuwangi"),
@@ -33,23 +53,37 @@ def find_banyuwangi_images() -> list[Path]:
     for d in CANDIDATE_DIRS:
         if d.exists():
             imgs = sorted(
-                list(d.glob("*.jpg")) + list(d.glob("*.png")) + list(d.glob("*.jpeg"))
+                [
+                    p
+                    for p in d.iterdir()
+                    if p.is_file() and p.suffix.lower() in [".jpg", ".jpeg", ".png"]
+                ]
             )
             if imgs:
+                print(f"[E8] Ditemukan {len(imgs)} citra di: {d}")
                 return imgs
-    # Pencarian menyeluruh di folder dataset
-    ds_dir = Path("/content/drive/MyDrive/precision-livestock-farming/dataset")
-    if ds_dir.exists():
-        found = list(ds_dir.glob("**/*banyuwangi*/*.*"))
-        if found:
-            return sorted(
-                [f for f in found if f.suffix.lower() in [".jpg", ".png", ".jpeg"]]
-            )
     return []
 
 
 def find_best_model_ckpt():
-    summaries = list(E1_DIR.glob("**/metrics_summary.json"))
+    # Cek langsung kandidat folder model terbaik (instan, tanpa recursive search di Google Drive)
+    best_candidate_dirs = [
+        E1_DIR / "E1_unet-mobilenetv2_cfgC_s0",
+        E1_DIR / "E1_yolov8s-seg_cfgC_s0",
+        E1_DIR / "E1_yolov8s-seg_cfgC_s2",
+    ]
+    for d in best_candidate_dirs:
+        summary_p = d / "metrics_summary.json"
+        ckpt_p = d / "best_val.pt"
+        if summary_p.exists() and ckpt_p.exists():
+            data = json.loads(summary_p.read_text(encoding="utf-8"))
+            conf = data.get("selection", {}).get(
+                "yolo_conf", data.get("selection", {}).get("unet_threshold", 0.5)
+            )
+            return data["model"], ckpt_p, conf
+
+    # Fallback (hanya 1 level subdirektori E1_DIR, BUKAN recursive **)
+    summaries = list(E1_DIR.glob("*/metrics_summary.json"))
     if not summaries:
         raise FileNotFoundError("Belum ada metrics_summary.json di E1.")
     best_summary, best_iou = None, -1.0
@@ -64,11 +98,10 @@ def find_best_model_ckpt():
         if iou > best_iou:
             best_iou, best_summary = iou, (data, s.parent)
     data, run_dir = best_summary
-    return (
-        data["model"],
-        run_dir / "best_val.pt",
-        data.get("selection", {}).get("unet_threshold", 0.5),
+    conf = data.get("selection", {}).get(
+        "yolo_conf", data.get("selection", {}).get("unet_threshold", 0.5)
     )
+    return data["model"], run_dir / "best_val.pt", conf
 
 
 def gray_world(rgb: np.ndarray) -> np.ndarray:
@@ -139,12 +172,37 @@ def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     if model_name.startswith("yolo"):
-        from ultralytics import YOLO
+        try:
+            from ultralytics import YOLO
+        except ImportError:
+            import subprocess
+            import sys
 
+            print("[E8] Menginstal paket ultralytics...")
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "-q", "ultralytics"]
+            )
+            from ultralytics import YOLO
         model = YOLO(str(ckpt))
     else:
-        import segmentation_models_pytorch as smp
+        try:
+            import segmentation_models_pytorch as smp
+        except ImportError:
+            import subprocess
+            import sys
 
+            print("[E8] Menginstal paket segmentation-models-pytorch...")
+            subprocess.check_call(
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "-q",
+                    "segmentation-models-pytorch",
+                ]
+            )
+            import segmentation_models_pytorch as smp
         model = smp.Unet("mobilenet_v2", encoder_weights=None, in_channels=3, classes=1)
         weights = torch.load(ckpt, map_location="cpu")
         if isinstance(weights, dict) and "state_dict" in weights:
@@ -184,14 +242,22 @@ def main():
                 verbose=False,
                 conf=conf,
             )
-            pred_c = (
-                (torch.any(res[0].masks.data > 0.5, dim=0))
-                .cpu()
-                .numpy()
-                .astype(np.uint8)
-                if (res[0].masks is not None and len(res[0].masks.data) > 0)
-                else np.zeros((INPUT_SIZE, INPUT_SIZE), dtype=np.uint8)
-            )
+            if res[0].masks is not None and len(res[0].masks.data) > 0:
+                m = res[0].masks.data.cpu().numpy() > 0.5
+                if m.shape[1:] != (INPUT_SIZE, INPUT_SIZE):
+                    m = np.stack(
+                        [
+                            cv2.resize(
+                                k.astype(np.uint8),
+                                (INPUT_SIZE, INPUT_SIZE),
+                                interpolation=cv2.INTER_NEAREST,
+                            )
+                            for k in m
+                        ]
+                    ).astype(bool)
+                pred_c = np.any(m, axis=0).astype(np.uint8)
+            else:
+                pred_c = np.zeros((INPUT_SIZE, INPUT_SIZE), dtype=np.uint8)
         else:
             norm = (canvas.astype(np.float32) / 255.0 - imnet_mean) / imnet_std
             t = (

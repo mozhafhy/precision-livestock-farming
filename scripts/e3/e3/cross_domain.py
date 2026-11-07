@@ -40,9 +40,24 @@ import pandas as pd
 import torch
 
 from scripts.e0.p4_degrade import degrade
-from scripts.common import COCO_JSON, CONFIGS, E0, E1, ROI_MARGIN, input_size, load_protocol, run_id
+from scripts.e1.common import (
+    COCO_JSON,
+    CONFIGS,
+    E0,
+    E1,
+    ROI_MARGIN,
+    input_size,
+    load_protocol,
+    run_id,
+)
 from scripts.e1.metrics import image_metrics
-from scripts.preprocessing import CocoIndex, apply_to_mask, invert_to_original, load_rgb, preprocess_image
+from scripts.e1.preprocessing import (
+    CocoIndex,
+    apply_to_mask,
+    invert_to_original,
+    load_rgb,
+    preprocess_image,
+)
 from scripts.e1.run import yolo_instances, yolo_union
 
 ROOT = Path(".")

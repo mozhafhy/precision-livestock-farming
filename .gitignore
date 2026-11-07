@@ -32,3 +32,4 @@ tmp/
 # Generated result and dataset
 results/**/*data*
 results/**/*pred_masks
+results/**/*overlay*
