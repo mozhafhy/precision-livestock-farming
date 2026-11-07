@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from ...utils.file_managements import load_img
+from utils.file_managements import load_img
+
 from .build_datasets import resolve_raw_path
 from .common import COCO_JSON, E1, MODELS, load_protocol, run_id
 from .metrics import METRIC_COLS

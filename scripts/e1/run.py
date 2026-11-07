@@ -26,7 +26,8 @@ import yaml
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
-from ...utils.file_managements import load_img
+from utils.file_managements import load_img
+
 from .build_datasets import data_dir
 from .common import (
     COCO_JSON,
@@ -98,12 +99,18 @@ def load_items(split: str, cfg: str) -> list[EvalItem]:
 
 def norm_aug(proto: dict) -> dict:
     raw = proto.get("augmentation", {}) or {}
-    unknown = set(raw) - set(AUG_KEYS)
+    name_map = {
+        "horizontal_flip_p": "fliplr",
+        "rotation_degrees": "degrees",
+        "brightness_contrast_limit": "hsv_v",
+    }
+    mapped = {name_map.get(k, k): v for k, v in raw.items()}
+    unknown = set(mapped) - set(AUG_KEYS)
     if unknown:
         raise ValueError(
             f"Kunci augmentasi tidak dikenal: {unknown}. Petakan ke {sorted(AUG_KEYS)}."
         )
-    a = {**AUG_KEYS, **raw}
+    a = {**AUG_KEYS, **mapped}
     return a
 
 
@@ -334,9 +341,16 @@ def fit_yolo(
 
     t, grid = proto["training"], list(proto["inference"]["yolo_conf_grid"])
     opt_map = {"adam": "Adam", "adamw": "AdamW", "sgd": "SGD"}
-    train_dir = run_dir / "yolo_train"
+    import tempfile
+    scratch_dir = Path(tempfile.gettempdir()) / "yolo_scratch" / run_dir.name
+    if scratch_dir.exists():
+        shutil.rmtree(scratch_dir, ignore_errors=True)
+    scratch_dir.mkdir(parents=True, exist_ok=True)
+    train_dir = scratch_dir / "yolo_train"
+    if (run_dir / "yolo_train").exists():
+        shutil.rmtree(run_dir / "yolo_train", ignore_errors=True)
     YOLO(f"{model_name}.pt").train(
-        data=str(data_dir(cfg) / "data.yaml"),
+        data=str((data_dir(cfg) / "data.yaml").resolve()),
         epochs=t["max_epochs"],
         patience=t["patience"],
         imgsz=size,
@@ -345,7 +359,7 @@ def fit_yolo(
         lr0=t["learning_rate"],
         seed=seed,
         deterministic=True,
-        project=str(run_dir.resolve()),
+        project=str(scratch_dir.resolve()),
         name="yolo_train",
         exist_ok=True,
         save_period=1,
@@ -392,7 +406,9 @@ def fit_yolo(
     best_path = train_dir / "weights" / best["ckpt"]
     shutil.copy(best_path, run_dir / "best_val.pt")
     shutil.copy(train_dir / "results.csv", run_dir / "ultralytics_results.csv")
-    shutil.rmtree(train_dir / "weights")  # hemat disk
+    if (train_dir / "results.csv").exists():
+        shutil.copy(train_dir / "results.csv", run_dir / "ultralytics_results.csv")
+    shutil.rmtree(scratch_dir, ignore_errors=True)  # hemat disk & bersihkan scratch lokal
 
     model, conf = YOLO(str(run_dir / "best_val.pt")), best["conf"]
     info = {
