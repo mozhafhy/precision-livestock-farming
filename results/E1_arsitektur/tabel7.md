@@ -3,3 +3,5 @@
 | yolov8n-seg      | 0.851 ± 0.003  | 0.913 ± 0.002  | 0.969 ± 0.001 | 0.910 ± 0.002 | 0.976 ± 0.001 | 0.908 ± 0.004 | 0.929 ± 0.001 |
 | yolov8s-seg      | 0.859 ± 0.004  | 0.920 ± 0.004  | 0.970 ± 0.001 | 0.915 ± 0.002 | 0.977 ± 0.001 | 0.917 ± 0.007 | 0.931 ± 0.007 |
 | unet-mobilenetv2 | 0.859 ± 0.005  | 0.920 ± 0.003  | 0.971 ± 0.001 | 0.915 ± 0.003 | 0.978 ± 0.001 | 0.923 ± 0.002 | 0.924 ± 0.002 |
+
+Best weight tiap model dapat diakses melalui [weights](https://1drv.ms/f/c/6ee80f8365a36c15/IgAOO4xQ4xFMSI7sX61nW33VAWNfumPczbXi8WveMdUBZSg?e=tDXPrb).
