@@ -25,5 +25,7 @@ dataset/degraded/
 # Temp folder
 tmp/
 
-# Model pt file
-*.pt
+
+# Generated result and dataset
+results/**/*data*
+results/**/*pred_masks
