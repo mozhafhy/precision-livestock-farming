@@ -2,7 +2,7 @@
 
 =============================================================================
 KETERANGAN KEBUTUHAN DATA DARI DRIVE / HASIL TRAINING:
-- Membutuhkan hasil E1 selesai (terutama Tabel 7 / metrics_per_image.csv) 
+- Membutuhkan hasil E1 selesai (terutama Tabel 7 / metrics_per_image.csv)
   untuk mengetahui Model Pemenang (Best Model: misal yolov8n-seg atau yolov8s-seg)
   serta hasil Config C yang sudah terlatih di E1.
 - Menjalankan pelatihan Best Model pada:
@@ -54,9 +54,11 @@ def get_best_model_from_e1() -> str:
         means = df[col].apply(lambda s: float(str(s).split("±")[0].strip()))
         best_idx = means.idxmax()
         best_model = df.loc[best_idx, "Model"]
-        print(f"[E2] Model Terbaik terpilih dari E1: {best_model} (IoU: {means[best_idx]:.4f})")
+        print(
+            f"[E2] Model Terbaik terpilih dari E1: {best_model} (IoU: {means[best_idx]:.4f})"
+        )
         return str(best_model)
-    
+
     # Fallback default jika tabel7 belum digenerate: cari dari metrics_summary
     summaries = list(E1_DIR.glob("**/metrics_summary.json"))
     if summaries:
@@ -68,14 +70,20 @@ def get_best_model_from_e1() -> str:
             scores.setdefault(m, []).append(iou)
         mean_scores = {m: np.mean(v) for m, v in scores.items()}
         best_model = max(mean_scores, key=mean_scores.get)
-        print(f"[E2] Model Terbaik terpilih dari summary JSON: {best_model} (IoU: {mean_scores[best_model]:.4f})")
+        print(
+            f"[E2] Model Terbaik terpilih dari summary JSON: {best_model} (IoU: {mean_scores[best_model]:.4f})"
+        )
         return best_model
 
-    print("[E2 Peringatan] Hasil E1 belum lengkap di folder lokal. Menggunakan default: yolov8n-seg")
+    print(
+        "[E2 Peringatan] Hasil E1 belum lengkap di folder lokal. Menggunakan default: yolov8n-seg"
+    )
     return "yolov8n-seg"
 
 
-def load_metrics_for_config(model: str, cfg: str, seeds: list[int]) -> dict[str, list[float]]:
+def load_metrics_for_config(
+    model: str, cfg: str, seeds: list[int]
+) -> dict[str, list[float]]:
     """Memuat metrik dari E1 (untuk cfg C) atau E2 (untuk cfg A dan B)."""
     metrics = {c: [] for c in METRIC_COLS}
     for s in seeds:
@@ -84,10 +92,12 @@ def load_metrics_for_config(model: str, cfg: str, seeds: list[int]) -> dict[str,
         p = E2_DIR / rid / "metrics_per_image.csv"
         if not p.exists():
             p = E1_DIR / rid / "metrics_per_image.csv"
-        
+
         if not p.exists():
-            raise FileNotFoundError(f"Berkas metrik tidak ditemukan untuk {rid} di E1 maupun E2.")
-        
+            raise FileNotFoundError(
+                f"Berkas metrik tidak ditemukan untuk {rid} di E1 maupun E2."
+            )
+
         df = pd.read_csv(p)
         for c in METRIC_COLS:
             metrics[c].append(float(df[c].mean()))
@@ -95,10 +105,20 @@ def load_metrics_for_config(model: str, cfg: str, seeds: list[int]) -> dict[str,
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Menjalankan Skenario E2: Ablasi Normalisasi Citra")
-    parser.add_argument("--model", default=None, help="Model yang diuji (default: Best Model dari E1)")
-    parser.add_argument("--device", default=None, help="Device komputasi (cuda atau cpu)")
-    parser.add_argument("--skip-train", action="store_true", help="Lewati training, langsung agregasi tabel jika sudah ada")
+    parser = argparse.ArgumentParser(
+        description="Menjalankan Skenario E2: Ablasi Normalisasi Citra"
+    )
+    parser.add_argument(
+        "--model", default=None, help="Model yang diuji (default: Best Model dari E1)"
+    )
+    parser.add_argument(
+        "--device", default=None, help="Device komputasi (cuda atau cpu)"
+    )
+    parser.add_argument(
+        "--skip-train",
+        action="store_true",
+        help="Lewati training, langsung agregasi tabel jika sudah ada",
+    )
     args = parser.parse_args()
 
     E2_DIR.mkdir(parents=True, exist_ok=True)
@@ -106,9 +126,9 @@ def main():
     seeds = proto["seeds"]
 
     model_name = args.model or get_best_model_from_e1()
-    print("\n=======================================================")
+    print(f"\n=======================================================")
     print(f"  SKENARIO E2: ABLASI NORMALISASI PADA MODEL: {model_name}")
-    print("=======================================================\n")
+    print(f"=======================================================\n")
 
     if not args.skip_train:
         for cfg in ["A", "B"]:
