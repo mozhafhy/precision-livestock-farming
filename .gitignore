@@ -25,6 +25,9 @@ dataset/degraded/
 # Temp folder
 tmp/
 
+# Model binary or checkpoint
+*.pth
+*.pt
 
 # Generated result and dataset
 results/**/*data*
