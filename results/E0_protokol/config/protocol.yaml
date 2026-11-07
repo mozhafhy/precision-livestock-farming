@@ -59,7 +59,7 @@ models:
     loss: BCE + Dice
 environment:
   python: 3.14.7
-  gpu: NVIDIA GeForce RTX 3050 Laptop GPU
+  gpu: NVIDIA A100-SXM4-40GB
   libraries:
     numpy: 2.5.3
     python: tidak terdeteksi

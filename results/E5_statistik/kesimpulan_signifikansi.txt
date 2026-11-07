@@ -1,0 +1,4 @@
+- **U-Net–MobileNetV2 vs YOLOv8n-Seg**: Tidak terdapat perbedaan yang signifikan secara statistik (p (Holm) = 0.3016 ≥ 0,05; r = 0.096, efek kecil), menunjukkan bahwa kinerja kedua model secara empiris setara.
+- **U-Net–MobileNetV2 vs YOLOv8s-Seg**: Tidak terdapat perbedaan yang signifikan secara statistik (p (Holm) = 0.3759 ≥ 0,05; r = 0.059, efek kecil), menunjukkan bahwa kinerja kedua model secara empiris setara.
+- **YOLOv8s-Seg vs YOLOv8n-Seg**: Tidak terdapat perbedaan yang signifikan secara statistik (p (Holm) = 0.0755 ≥ 0,05; r = 0.149, efek kecil), menunjukkan bahwa kinerja kedua model secara empiris setara.
+- **Konfigurasi C vs A (yolov8s-seg)**: Perbedaan signifikan secara statistik (p (Holm) = 1.06e-28 < 0,05; r = 0.749, efek besar), di mana model pertama mengungguli model kedua.

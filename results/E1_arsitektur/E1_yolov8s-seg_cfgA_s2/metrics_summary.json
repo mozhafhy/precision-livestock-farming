@@ -1,0 +1,28 @@
+{
+  "run_id": "E1_yolov8s-seg_cfgA_s2",
+  "model": "yolov8s-seg",
+  "seed": 2,
+  "config": "A",
+  "git": {
+    "commit": "48a2318c24bea503cca88d23d09bc469a8aa54dd",
+    "dirty": true
+  },
+  "selection": {
+    "best_epoch": 93,
+    "val_miou": 0.8723363847213832,
+    "val_iou_exc": 0.7843032420222948,
+    "yolo_conf": 0.2
+  },
+  "test": {
+    "iou_exc": 0.7456639548135605,
+    "dsc_exc": 0.8262819896194924,
+    "iou_bg": 0.9545545184362775,
+    "miou": 0.850109236624919,
+    "pa": 0.9608801020408163,
+    "precision": 0.8335290255371943,
+    "recall": 0.8525223386177389
+  },
+  "n_test": 225,
+  "n_no_prediction": 9,
+  "train_seconds": 1004.8
+}
