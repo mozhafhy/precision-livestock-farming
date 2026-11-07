@@ -126,9 +126,9 @@ def main():
     seeds = proto["seeds"]
 
     model_name = args.model or get_best_model_from_e1()
-    print(f"\n=======================================================")
+    print("\n=======================================================")
     print(f"  SKENARIO E2: ABLASI NORMALISASI PADA MODEL: {model_name}")
-    print(f"=======================================================\n")
+    print("=======================================================\n")
 
     if not args.skip_train:
         for cfg in ["A", "B"]:
