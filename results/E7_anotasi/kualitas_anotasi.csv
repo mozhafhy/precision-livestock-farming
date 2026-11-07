@@ -1,0 +1,7 @@
+Indikator,Latih,Validasi,Uji
+Jumlah citra teranotasi,1.050,225,225
+Jumlah objek ekskreta,1.102,242,240
+Rerata proporsi piksel foreground (%),"19,51","21,46","20,79"
+IoU masker SAM mentah vs final (%),"68,40","68,12","68,65"
+Proporsi masker direvisi ahli (%),12,10,15
+Kesepakatan anotator-ahli IoU rerata (30 citra),-,-,8.81

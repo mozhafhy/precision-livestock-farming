@@ -1,0 +1,98 @@
+run_id: E1_yolov8s-seg_cfgC_s0
+model: yolov8s-seg
+seed: 0
+config: C
+preprocessing:
+  spatial: true
+  spectral: true
+roi_margin: 0.1
+device: cuda
+git:
+  commit: 48a2318c24bea503cca88d23d09bc469a8aa54dd
+  dirty: true
+protocol_sha256: b24e5789761a25c675a33ce04c1f3a9f69ea87973c198b19f920f9ba595cffd5
+protocol:
+  frozen_at: '2026-11-06T21:55:06'
+  seeds:
+  - 0
+  - 1
+  - 2
+  data:
+    split_seed: 42
+    subset_size: 1500
+    split_sizes:
+      train: 1050
+      val: 225
+      test: 225
+    phash_max_hamming: 5
+    external_size: 100
+    degradation:
+      max_side: 100
+      downscale: INTER_AREA
+      upscale: INTER_CUBIC
+  input_resolution: 256
+  augmentation:
+    horizontal_flip_p: 0.5
+    rotation_degrees: 15
+    brightness_contrast_limit: 0.2
+  training:
+    max_epochs: 100
+    patience: 20
+    optimizer: AdamW
+    learning_rate: 0.001
+    batch_size: 16
+  inference:
+    unet_threshold: 0.5
+    yolo_conf_grid:
+    - 0.1
+    - 0.15
+    - 0.2
+    - 0.25
+    - 0.3
+    - 0.35
+    - 0.4
+    - 0.45
+    - 0.5
+    - 0.55
+    - 0.6
+    - 0.65
+    - 0.7
+    - 0.75
+    - 0.8
+    - 0.85
+    - 0.9
+  models:
+    yolov8n-seg:
+      pretrained: COCO
+      loss: bawaan YOLOv8-Seg
+    yolov8s-seg:
+      pretrained: COCO
+      loss: bawaan YOLOv8-Seg
+    unet-mobilenetv2:
+      pretrained: ImageNet (encoder)
+      loss: BCE + Dice
+  environment:
+    python: 3.14.7
+    gpu: NVIDIA GeForce RTX 3050 Laptop GPU
+    libraries:
+      numpy: 2.5.3
+      python: tidak terdeteksi
+      opencv: tidak terdeteksi
+      ipykernel: 7.3.0
+      matplotlib: 3.11.2
+      scikit-learn: tidak terdeteksi
+      pandas: 3.0.6
+      pyyaml: tidak terdeteksi
+      pycocotools: tidak terdeteksi
+      ultralytics: 8.4.177
+      torchvision: 0.28.0
+      segmentation-models-pytorch: tidak terdeteksi
+      albumentations: tidak terdeteksi
+      imagehash: 4.3.2
+  split_files_sha256:
+    train.csv: dee32cc7f729b75112863b79f1db10c7336a8c38e69b98e16788348ceea7e746
+    val.csv: d791aa4393ef1d227ab18618a9d8bc3d73de51ca6eeeac8e62583b9a529c8366
+    test.csv: 82ad758c02d8e4538bacee9a21acb164bb06d63b2ed8b823f0300b61b5ed8f54
+    external_mendeley.csv: 8cd8abaf12e6e98bf43b52e079617ecc995c369e01809bfd3ea524b28ebb46bb
+    hash_groups.csv: 2331af57923ea8c64a974c7d77d34684c7ca0f2ec9c792caab39485849516809
+started_at: '2026-11-06T20:18:30'

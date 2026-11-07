@@ -1,0 +1,27 @@
+{
+  "run_id": "E1_unet-mobilenetv2_cfgC_s2",
+  "model": "unet-mobilenetv2",
+  "seed": 2,
+  "config": "C",
+  "git": {
+    "commit": "48a2318c24bea503cca88d23d09bc469a8aa54dd",
+    "dirty": true
+  },
+  "selection": {
+    "best_epoch": 28,
+    "val_miou": 0.9070559145273531,
+    "unet_threshold": 0.5
+  },
+  "test": {
+    "iou_exc": 0.8544509223728809,
+    "dsc_exc": 0.9180080047552166,
+    "iou_bg": 0.9698584218043614,
+    "miou": 0.9121546720886211,
+    "pa": 0.9767331880668935,
+    "precision": 0.9210109483748667,
+    "recall": 0.9216478885425405
+  },
+  "n_test": 225,
+  "n_no_prediction": 0,
+  "train_seconds": 236.4
+}

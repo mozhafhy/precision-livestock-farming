@@ -1,0 +1,8 @@
+| Kategori galat                                        |   Jumlah citra | Contoh image_id    | Catatan                                                                |
+|:------------------------------------------------------|---------------:|:-------------------|:-----------------------------------------------------------------------|
+| Ekskreta basah menyebar ke sekam lembap (FP)          |             14 | KGL_0085, KGL_0223 | Kontur meluber ke serbuk sekam akibat warna cokelat/basah yang identik |
+| Tudung urat tipis terpotong (FN)                      |              6 | KGL_0795, KGL_0952 | Batas asam urat tipis di tepi kotoran terlewat akibat kontras rendah   |
+| Sekam/bulu putih terdeteksi sebagai ekskreta (FP)     |              5 | KGL_0085, KGL_0223 | Bulu ayam putih/sekam terang disalahartikan sebagai asam urat          |
+| Bayangan kuat                                         |              1 | KGL_0952           | Gradien bayangan kawat sangkar mengaburkan batas ekskreta              |
+| Beberapa objek dalam satu citra                       |             13 | KGL_0085, KGL_0223 | Gumpalan kotoran terpisah-pisah mengalami miss pada objek kecil        |
+| Lainnya: Oklusi kawat sangkar / Ekskreta sangat kecil |              0 | -                  | Ekskreta tertutup kawat baterai atau ukuran < 15 piksel                |

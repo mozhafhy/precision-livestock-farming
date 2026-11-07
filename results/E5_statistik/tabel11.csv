@@ -1,0 +1,5 @@
+Pasangan,Median selisih IoU (poin),W,p (Holm),r,Signifikan?
+U-Net–MobileNetV2 vs YOLOv8n-Seg,+0.20,11308.0,0.3016,0.096,Tidak
+U-Net–MobileNetV2 vs YOLOv8s-Seg,-0.25,11847.0,0.3759,0.059,Tidak
+YOLOv8s-Seg vs YOLOv8n-Seg,+0.21,10524.0,0.0755,0.149,Tidak
+Konfigurasi C vs A (yolov8s-seg),+5.35,1727.0,1.06e-28,0.749,Ya

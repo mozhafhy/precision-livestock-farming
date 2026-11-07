@@ -1,0 +1,4 @@
+Konfigurasi,IoU Ekskreta,DSC Ekskreta,mIoU,Presisi,Recall
+Konfigurasi A (Tanpa Normalisasi Spasial & Spektral),0.7508 ± 0.0147,0.8332 ± 0.0126,0.8528 ± 0.0075,0.8388 ± 0.0072,0.8625 ± 0.0137
+Konfigurasi B (Normalisasi Spasial Saja / ROI + Letterbox),0.8545 ± 0.0021,0.9172 ± 0.0010,0.9112 ± 0.0012,0.9080 ± 0.0033,0.9348 ± 0.0041
+Konfigurasi C (Normalisasi Spasial + Spektral / Lengkap),0.8592 ± 0.0044,0.9197 ± 0.0035,0.9148 ± 0.0024,0.9167 ± 0.0067,0.9306 ± 0.0071
